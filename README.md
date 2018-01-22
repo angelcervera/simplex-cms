@@ -32,3 +32,10 @@ Think about to use Git as persistence layer, to have versioning and branches out
   - [ ] Forms
 
 
+# Notes
+Woodstox posts:
+- [Configuring Woodstox XML parser: basic Stax properties / Woodstox Part 1](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-basic-stax-properties-39bdf88c18ec)
+- [Configuring Woodstox XML parser: Stax2 properties / Woodstox Part 2](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-stax2-properties-c80ef5a32ef1) 
+- [Configuring Woodstox XML parser: Woodstox-specific properties / Woodstox Part 3](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
+- [GitHub](https://github.com/FasterXML/woodstox)
+- [Official website ???](https://fasterxml.github.io/woodstox/)
