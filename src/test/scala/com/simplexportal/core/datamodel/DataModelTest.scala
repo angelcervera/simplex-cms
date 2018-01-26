@@ -5,20 +5,18 @@ import org.scalatest.{ GivenWhenThen, WordSpec }
 class DataModelTest extends WordSpec with GivenWhenThen {
 
   "Page" when {
-    "try to extract the name" should {
-      "return the right one" in {
+    "calculates the name" should {
+      "returns the right one" in {
         assert(Page("/page.html").name === "page.html")
         assert(Page("/folder1/folder2/page.html").name === "page.html")
       }
     }
-    "try to extract the parent" should {
-      "return the right one" in {
-        assert(Page("/page.html").parent == Some("/"))
-        assert(Page("/folder1/folder2/page.html").parent === Some("/folder1/folder2"))
-      }
+    "calculates the parent" should {
+      "returns the root if it is on the top" in assert(Page("/page.html").parent == Some("/"))
+      "returns the right one" in assert(Page("/folder1/folder2/page.html").parent === Some("/folder1/folder2"))
     }
-    "try to create one with a wrong path" should {
-      "throw an error" in {
+    "creates one with a wrong path" should {
+      "throws an error" in {
         val thrown = intercept[IllegalArgumentException] { Page("/page.html/") }
         assert(thrown.getMessage === "requirement failed: Trying to create a content with invalid path [/page.html/]")
 
@@ -29,20 +27,18 @@ class DataModelTest extends WordSpec with GivenWhenThen {
   }
 
   "Resource" when {
-    "try to extract the name" should {
-      "return the right one" in {
+    "calculates the name" should {
+      "returns the right one" in {
         assert(Resource("/img.png", "image/png").name === "img.png")
         assert(Resource("/folder1/folder2/img.png", "image/png").name === "img.png")
       }
     }
-    "try to extract the parent" should {
-      "return the right one" in {
-        assert(Resource("/img.png", "image/png").parent == Some("/"))
-        assert(Resource("/folder1/folder2/img.png", "image/png").parent === Some("/folder1/folder2"))
-      }
+    "calculates the parent" should {
+      "returns the root if it is on the top" in assert(Resource("/img.png", "image/png").parent == Some("/"))
+      "returns the right one" in assert(Resource("/folder1/folder2/img.png", "image/png").parent === Some("/folder1/folder2"))
     }
-    "try to create one with a wrong path" should {
-      "throw an error" in {
+    "creates one with a wrong path" should {
+      "throws an error" in {
         val thrown = intercept[IllegalArgumentException] { Resource("/img.png/", "image/png") }
         assert(thrown.getMessage === "requirement failed: Trying to create a content with invalid path [/img.png/]")
 
@@ -53,22 +49,20 @@ class DataModelTest extends WordSpec with GivenWhenThen {
   }
 
   "Folder" when {
-    "try to extract the name" should {
-      "return the right one" in {
-        assert(Folder("/", None).name === "/")
+    "calculates the name" should {
+      "returns / if it is the root" in assert(Folder("/", None).name === "/")
+      "returns the right one" in {
         assert(Folder("/folder", None).name === "folder")
         assert(Folder("/folder1/folder2/folder3", None).name === "folder3")
       }
     }
-    "try to extract the parent" should {
-      "return the right one" in {
-        assert(Folder("/", None).parent === None, "None for the root")
-        assert(Folder("/folder", None).parent == Some("/"))
-        assert(Folder("/folder1/folder2/folder3", None).parent === Some("/folder1/folder2"))
-      }
+    "calculates the parent" should {
+      "returns None if it is the root" in assert(Folder("/", None).parent === None)
+      "returns the root if it is on the top" in assert(Folder("/folder", None).parent == Some("/"))
+      "returns the right one" in assert(Folder("/folder1/folder2/folder3", None).parent === Some("/folder1/folder2"))
     }
-    "try to create one with a wrong path" should {
-      "throw an error" in {
+    "creates one with a wrong path" should {
+      "throws an error" in {
         val thrown = intercept[IllegalArgumentException] { Folder("/folder/", None) }
         assert(thrown.getMessage === "requirement failed: Trying to create a content with invalid path [/folder/]")
       }

@@ -1,0 +1,23 @@
+        <simplex:component />
+        <h1><a href="index.html"><img src="images/logo.jpg" alt=""/></a></h1>
+        <nav>
+            <ul class="menu">
+                <li class="current"><a href="index.html">restaurant</a></li>
+                <li><a href="cuisine.html">cuisine</a></li>
+                <li><a href="wine_list.html">wine list</a></li>
+                <li><a href="cookbook.html">cookbook</a></li>
+                <li><a href="gallery.html">gallery</a></li>
+                <li><a href="contacts.html">contacts</a></li>
+            </ul>
+            <div class="clear"></div>
+         </nav>
+        <simplex:slide id="slide">
+            <div class="slider">
+                <ul class="items">
+                    <li><img src="images/slider-1.jpg" alt="" /></li>
+                    <li><img src="images/slider-2.jpg" alt="" /></li>
+                    <li><img src="images/slider-3.jpg" alt="" /></li>
+                </ul>
+          </div>
+          <div class="phone-number">Call us for reservation:<strong>1-800-123-1234</strong></div>
+      </simplex:slide>

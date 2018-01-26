@@ -46,8 +46,8 @@
 <div class="bg-top">
 <div class="bgr">
   <!--==============================header=================================-->
-    <header>
-        <simplex:component />
+    <simplex:header name="header1">
+        <simplex:component name="component1" />
         <h1><a href="index.html"><img src="images/logo.jpg" alt=""/></a></h1>
         <nav>  
             <ul class="menu">
@@ -60,7 +60,7 @@
             </ul>
             <div class="clear"></div>
          </nav>
-        <div id="slide">		
+        <simplex:slide id="slide" name="slide1">
             <div class="slider">
                 <ul class="items">
                     <li><img src="images/slider-1.jpg" alt="" /></li>
@@ -69,10 +69,10 @@
                 </ul>
           </div>
           <div class="phone-number">Call us for reservation:<strong>1-800-123-1234</strong></div>	
-      </div> 
-    </header>  
+      </simplex:slide>
+    </simplex:header>
   <!--==============================content================================-->
-    <section id="content"><div class="ic"></div>
+    <simplex:section id="content" name="section1"><div class="ic"></div>
        <div class="block-1">
        	<div class="border-right">
         	<div class="block-1-title">
@@ -167,7 +167,7 @@ Nunc viverra nisi sed orci.</p>
             </div>
         </div>
        </div>
-    </section> 
+    </simplex:section>
 
 <!--==============================footer=================================-->
   <footer>

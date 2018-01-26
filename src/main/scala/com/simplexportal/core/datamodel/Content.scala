@@ -37,10 +37,10 @@ case class Resource(path: String, mimeType: String, encoding: Option[String] = N
 case class Page(path: String, mimeType: String = "text/html", encoding: String = "UTF-8") extends Content(path)
 
 case class Component(
-  path: String,
+  id: String,
   `type`: String,
   fullTag: String,
   bodyTag: String,
   processedTag: String,
   executionOrder: Long
-) extends Content(path: String)
+) extends Content(id: String)
