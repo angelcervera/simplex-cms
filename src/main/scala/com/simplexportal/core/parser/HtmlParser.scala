@@ -138,7 +138,10 @@ object HtmlParser extends Parser {
 
   override def extractBody(text: String, nodeLocation: NodeLocation) = {
     require(nodeLocation.end.isDefined, "End location must be defined")
-    text.substring(nodeLocation.start.characterOffset, nodeLocation.end.get.characterOffset)
+    if(nodeLocation.start.characterOffset == nodeLocation.end.get.characterOffset)
+      ""
+    else
+      text.substring(text.indexOf('>', nodeLocation.start.characterOffset) +1, nodeLocation.end.get.characterOffset)
   }
 
 }

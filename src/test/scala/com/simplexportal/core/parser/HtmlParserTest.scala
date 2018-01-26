@@ -36,10 +36,12 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
         testParserResults(
           "src/test/resources/com/simplexportal/core/parser/template1.html",
           List(
-            NodeLocation("section",Location(75,5,3165),Some(Location(170,5,9458)),1,Map("id" -> "content", "name"->"section1")),
-            NodeLocation("header",Location(49,5,1885),Some(Location(73,5,3062)),1,Map("name"->"header1")),
-            NodeLocation("slide",Location(63,9,2568),Some(Location(72,7,3040)),2,Map("id" -> "slide", "name"->"slide1")),
-            NodeLocation("component",Location(50,9,1926),Some(Location(50,9,1926)),2,Map("name"->"component1"))
+            NodeLocation("nobody",Location(180,1,9756),Some(Location(180,1,9756)),1,Map()),
+            NodeLocation("emptybody",Location(179,1,9716),Some(Location(179,20,9735)),1,Map()),
+            NodeLocation("section",Location(75,5,3091),Some(Location(170,5,9289)),1,Map("id" -> "content", "name"->"section1")),
+            NodeLocation("header",Location(49,5,1837),Some(Location(73,5,2990)),1,Map("name"->"header1")),
+            NodeLocation("slide",Location(63,9,2506),Some(Location(72,7,2969)),2,Map("id" -> "slide", "name"->"slide1")),
+            NodeLocation("component",Location(50,9,1877),Some(Location(50,9,1877)),2,Map("name"->"component1"))
           ))
       }
     }
@@ -52,8 +54,10 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
         val result = HtmlParser.searchComponents(html, 1)
         Then("return only the expected list of them")
         val expected = Right(List(
-          NodeLocation("section",Location(75,5,3165),Some(Location(170,5,9458)),1,Map("id" -> "content", "name"->"section1")),
-          NodeLocation("header",Location(49,5,1885),Some(Location(73,5,3062)),1,Map("name"->"header1"))
+          NodeLocation("nobody",Location(180,1,9756),Some(Location(180,1,9756)),1,Map()),
+          NodeLocation("emptybody",Location(179,1,9716),Some(Location(179,20,9735)),1,Map()),
+          NodeLocation("section",Location(75,5,3091),Some(Location(170,5,9289)),1,Map("id" -> "content", "name" -> "section1")),
+          NodeLocation("header",Location(49,5,1837),Some(Location(73,5,2990)),1,Map("name" -> "header1"))
         ))
         result shouldBe expected
       }
@@ -65,14 +69,28 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
         val html = File("src/test/resources/com/simplexportal/core/parser/template1.html").contentAsString
         When("search for a set of tags")
         val nodes = HtmlParser.searchComponents(html, 1)
-        Then("return only the expected list of them")
-        val expected = File("src/test/resources/com/simplexportal/core/parser/template1_head.body").contentAsString
+        Then("return only the expected body")
+        val expected = File("src/test/resources/com/simplexportal/core/parser/template1_header.body").contentAsString
         nodes match {
           case Right(nloc) => HtmlParser.extractBody(html, nloc.filter(_.`type` == "header").head) shouldBe expected
           case Left(e) => fail(e.toString)
         }
       }
-    }
 
+      "gives empty if no content" in {
+        Given("A xhtml template with a component without body")
+        val html = File("src/test/resources/com/simplexportal/core/parser/template1.html").contentAsString
+        When("search for all tags")
+        val nodes = HtmlParser.searchComponents(html)
+        Then("return a empty string.")
+        nodes match {
+          case Right(nloc) => {
+            HtmlParser.extractBody(html, nloc.filter(_.`type` == "emptybody").head) shouldBe ""
+            HtmlParser.extractBody(html, nloc.filter(_.`type` == "nobody").head) shouldBe ""
+          }
+          case Left(e) => fail(e.toString)
+        }
+      }
+    }
   }
 }
