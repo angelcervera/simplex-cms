@@ -158,11 +158,12 @@ object HtmlParser extends Parser {
 
   override def extractBody(cmpMetadata: ComponentMetadata): String = {
     val startIdx = cmpMetadata.fullTag.indexOf(">")
-    val endIdx = cmpMetadata.fullTag.lastIndexOf("<")
-    if(endIdx == 0)
-      ""
-    else
-      cmpMetadata.fullTag.substring(startIdx +1, endIdx)
+    cmpMetadata.fullTag.lastIndexOf("<") match {
+      case 0 => ""
+      case endIdx if endIdx > 0 => cmpMetadata.fullTag.substring(startIdx +1, endIdx)
+      case _ => throw new Exception("XML Format error. < char not found")
+    }
+
   }
 
 }
