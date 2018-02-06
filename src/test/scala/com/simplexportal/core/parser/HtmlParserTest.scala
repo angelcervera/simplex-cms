@@ -1,8 +1,9 @@
 package com.simplexportal.core.parser
 
-import org.scalatest.{ GivenWhenThen, WordSpec }
+import org.scalatest.{GivenWhenThen, WordSpec}
 import org.scalatest.Matchers._
 import better.files.File
+import com.simplexportal.core.component.ComponentMetadata
 
 class HtmlParserTest extends WordSpec with GivenWhenThen {
 
@@ -18,7 +19,7 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
     }
   }
 
-  "HtmlParser" when {
+  "HtmlParser" should {
 
     "search for components" should {
       "find all components in a simple template" in {
@@ -64,7 +65,7 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
     }
 
     "extracts the body of the node" should {
-      "gives the right content" in {
+      "give the right content" in {
         Given("A xhtml template")
         val html = File("src/test/resources/com/simplexportal/core/parser/template1.html").contentAsString
         When("search for a set of tags")
@@ -77,7 +78,7 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
         }
       }
 
-      "gives empty if no content" in {
+      "give empty if no content" in {
         Given("A xhtml template with a component without body")
         val html = File("src/test/resources/com/simplexportal/core/parser/template1.html").contentAsString
         When("search for all tags")
@@ -90,6 +91,49 @@ class HtmlParserTest extends WordSpec with GivenWhenThen {
           }
           case Left(e) => fail(e.toString)
         }
+      }
+    }
+
+    "extract right body in a component" when {
+      "the body is constant" in {
+        val result = HtmlParser.extractBody(ComponentMetadata(
+          "id",
+          "cnt",
+          "<simplex:cnt id=\"component1\">Constant value</simplex:cnt>",
+          1
+        ))
+
+        assert(result === "Constant value")
+      }
+      "the body contains other components" in {
+        val result = HtmlParser.extractBody(ComponentMetadata(
+          "id",
+          "cnt",
+          "<simplex:cnt id=\"component1\">Other components <simplex:cnt id=\"component2\">like this</simplex:cnt>inside</simplex:cnt>",
+          1
+        ))
+
+        assert(result === "Other components <simplex:cnt id=\"component2\">like this</simplex:cnt>inside")
+      }
+      "it is no body tag" in {
+        val result = HtmlParser.extractBody(ComponentMetadata(
+          "id",
+          "cnt",
+          "<simplex:cnt id=\"component1\"/>",
+          1
+        ))
+
+        assert(result === "")
+      }
+      "the body is empty" in {
+        val result = HtmlParser.extractBody(ComponentMetadata(
+          "id",
+          "cnt",
+          "<simplex:cnt id=\"component1\"></simplex:cnt>",
+          1
+        ))
+
+        assert(result === "")
       }
     }
   }

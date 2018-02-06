@@ -5,6 +5,7 @@ scalaVersion := "2.11.12"
 lazy val scalatestVersion  = "3.0.4"
 lazy val velocityVersion   = "2.0"
 
+
 // Modules
 lazy val root = (project in file(".")).
   settings(

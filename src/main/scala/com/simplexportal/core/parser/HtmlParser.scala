@@ -7,10 +7,11 @@ import javax.xml.stream.{XMLInputFactory, XMLStreamConstants, XMLStreamException
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
 import com.simplexportal.core.Configuration
+import com.simplexportal.core.component.{Component, ComponentMetadata}
+import com.simplexportal.core.datamodel.GenericError
 import org.codehaus.stax2.XMLInputFactory2
 
 import scala.annotation.tailrec
-
 import scala.collection.JavaConverters._
 
 object HtmlParser extends Parser {
@@ -52,12 +53,14 @@ object HtmlParser extends Parser {
     // http://woodstox.codehaus.org/javadoc/stax-api/1.0/javax/xml/stream/XMLInputFactory.html
     // http://woodstox.codehaus.org/4.2.0/javadoc/com/ctc/wstx/api/WstxInputProperties.html
 
-    tmp.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-    tmp.setProperty(XMLInputFactory.IS_VALIDATING, false);
-    tmp.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-    tmp.setProperty(XMLInputFactory2.P_PRESERVE_LOCATION, true);
-    tmp.setProperty(WstxInputProperties.P_CACHE_DTDS, true);
-    tmp.setProperty(WstxInputProperties.P_CACHE_DTDS_BY_PUBLIC_ID, true);
+    tmp.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false)
+    tmp.setProperty(XMLInputFactory.IS_VALIDATING, false)
+    tmp.setProperty(XMLInputFactory.SUPPORT_DTD, false)
+    tmp.setProperty(XMLInputFactory2.P_PRESERVE_LOCATION, true)
+    tmp.setProperty(WstxInputProperties.P_CACHE_DTDS, true)
+    tmp.setProperty(WstxInputProperties.P_CACHE_DTDS_BY_PUBLIC_ID, true)
+    tmp.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false)
+
     //		xmlInputFactory.configureForSpeed();
 
     // http://woodstox.codehaus.org/2.0.6/javadoc/org/codehaus/stax2/XMLInputFactory2.html#configureForRoundTripping%28%29
@@ -80,12 +83,9 @@ object HtmlParser extends Parser {
     try {
 
       implicit class ParserEnricher(parser: XMLStreamReader) {
-        implicit def containsTag(tags: Seq[String]): Boolean = tags.contains(parser.getLocalName)
-
-        implicit def containsNamespace(namespaces: Seq[String]): Boolean = namespaces.contains(parser.getPrefix)
 
         implicit def buildNodeLocation(deep: Int) = NodeLocation(
-          parser.getLocalName,
+          extractLocalName,
           parser.getLocation.htmlParserLocation,
           None,
           deep,
@@ -94,7 +94,19 @@ object HtmlParser extends Parser {
 
         implicit def completeNodeLocation(node: NodeLocation): NodeLocation = node.copy(end = Some(parser.getLocation.htmlParserLocation))
 
-        implicit def isNodeToExtract(tags: Seq[String], ns: Seq[String]) = parser.containsTag(tags) || parser.containsNamespace(ns)
+        implicit def extractLocalName = parser.getLocalName.split(":") match {
+          case parts if parts.size == 1 => parts(0)
+          case parts if parts.size == 2 => parts(1)
+          case _ => throw new Exception(s"xml format error. [${parser.getLocalName}] does not follow the XML format of namespace:tagname")
+        }
+
+        implicit def isNodeToExtract(tags: Seq[String], ns: Seq[String]): Boolean = isNodeToExtract(parser.getLocalName, tags, ns)
+
+        def isNodeToExtract(fullTagName: String, tags: Seq[String], ns: Seq[String]): Boolean = fullTagName.split(":") match {
+          case parts if parts.size == 1 => tags.contains(parts(0))
+          case parts if parts.size == 2 => tags.contains(parts(1)) || namespaces.contains(parts(0))
+          case _ => throw new Exception(s"xml format error. [${fullTagName}] does not follow the XML format of namespace:tagname")
+        }
       }
 
       val parser = xmlInputFactory.createXMLStreamReader(reader)
@@ -113,7 +125,7 @@ object HtmlParser extends Parser {
             case XMLStreamConstants.START_ELEMENT if parser.isNodeToExtract(tags, namespaces) => loop(parser.buildNodeLocation(stack.size + 1) :: stack, locations)
             case XMLStreamConstants.END_ELEMENT if parser.isNodeToExtract(tags, namespaces) => stack match {
               case Nil => Left(UnCompleteTree)
-              case head :: tail if head.`type` != parser.getLocalName => Left(UnBalancedTree(head, parser.getLocalName, parser.getLocation))
+              case head :: tail if head.`type` != parser.extractLocalName => Left(UnBalancedTree(head, parser.extractLocalName, parser.getLocation))
               case head :: tail => loop(tail, parser.completeNodeLocation(head) :: locations)
             }
             case _ => loop(stack, locations)
@@ -142,6 +154,15 @@ object HtmlParser extends Parser {
       ""
     else
       text.substring(text.indexOf('>', nodeLocation.start.characterOffset) +1, nodeLocation.end.get.characterOffset)
+  }
+
+  override def extractBody(cmpMetadata: ComponentMetadata): String = {
+    val startIdx = cmpMetadata.fullTag.indexOf(">")
+    val endIdx = cmpMetadata.fullTag.lastIndexOf("<")
+    if(endIdx == 0)
+      ""
+    else
+      cmpMetadata.fullTag.substring(startIdx +1, endIdx)
   }
 
 }

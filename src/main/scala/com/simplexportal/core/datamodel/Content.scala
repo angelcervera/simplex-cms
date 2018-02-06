@@ -12,7 +12,7 @@ sealed abstract class Content(path: String) {
   /**
    * Calculate the name of the content from the path.
    */
-  def name: String =path.split("/") match {
+  def name: String = path.split("/") match {
     case Array() => "/"
     case parts => parts.last
   }
@@ -36,11 +36,3 @@ case class Resource(path: String, mimeType: String, encoding: Option[String] = N
 
 case class Page(path: String, mimeType: String = "text/html", encoding: String = "UTF-8") extends Content(path)
 
-case class Component(
-  id: String,
-  `type`: String,
-  fullTag: String,
-  bodyTag: String,
-  processedTag: String,
-  executionOrder: Long
-) extends Content(id: String)
