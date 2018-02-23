@@ -5,16 +5,12 @@ import org.apache.velocity.app.VelocityEngine
 import org.apache.velocity.tools.ToolManager
 import com.simplexportal.core.util._
 
-object VelocityRenderer {
-  def apply: VelocityRenderer = new VelocityRenderer()
-}
+object VelocityRenderer/* extends Renderer*/ {
 
-class VelocityRenderer extends Renderer {
-
-  lazy val velocityEngine: VelocityEngine = new VelocityEngine(Configuration.config.toProperties("cms.velocity.engine"))
+/*  lazy val velocityEngine: VelocityEngine = new VelocityEngine(Configuration.config.toProperties("cms.velocity.engine"))
 
   lazy val velocityToolManager: ToolManager = new ToolManager
 
-  override def render(template: String, renderContext: RenderContext): String = template // TODO: Apply the Velocity template.
+  override def render(template: String, renderContext: RenderContext) = Right(template) // TODO: Apply the Velocity template.*/
 
 }
