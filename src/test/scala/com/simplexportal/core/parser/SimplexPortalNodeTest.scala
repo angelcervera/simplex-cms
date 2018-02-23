@@ -24,29 +24,29 @@ class SimplexPortalNodeTest extends WordSpec with GivenWhenThen {
         "find all components in a simple template" in {
           testParserResults(
             "src/test/resources/com/simplexportal/core/parser/simple_body_div.html",
-            SimplexPortalNode("root",Location(1,1,0),Some(Location(12,1,331)), Map.empty, List(
-              SimplexPortalNode("body", Location(3,5,86),Some(Location(8,5,270)), Map("name" -> "body1"), List(
-                SimplexPortalNode("div",Location(4,9,122),Some(Location(7,9,251)), Map("class" -> "bg-top", "name" -> "div1"), List(
-                  SimplexPortalNode("div",Location(5,13,175),Some(Location(6,13,228)), Map("class" -> "bg-top", "name" -> "div2"), List.empty))
+            SimplexPortalNode("root",Location(1,1,0),Location(12,1,331), Map.empty, List(
+              SimplexPortalNode("body", Location(3,5,86),Location(8,5,270), Map("name" -> "body1"), List(
+                SimplexPortalNode("div",Location(4,9,122),Location(7,9,251), Map("class" -> "bg-top", "name" -> "div1"), List(
+                  SimplexPortalNode("div",Location(5,13,175),Location(6,13,228), Map("class" -> "bg-top", "name" -> "div2"), List.empty, "")), ""
                 )
-              )),
-              SimplexPortalNode("other",Location(9,5,290),Some(Location(9,20,305)), Map.empty, List.empty)
-            ))
+              ), ""),
+              SimplexPortalNode("other",Location(9,5,290),Location(9,20,305), Map.empty, List.empty, "")
+            ), "")
           )
         }
 
         "find all components in a complex template" in {
           testParserResults(
             "src/test/resources/com/simplexportal/core/parser/template1.html",
-            SimplexPortalNode("root",Location(1,1,0),Some(Location(182,8,9789)), Map.empty, List(
-              SimplexPortalNode("header",Location(49,5,1837),Some(Location(73,5,2990)), Map("name"->"header1"), List(
-                SimplexPortalNode("component",Location(50,9,1877),Some(Location(50,9,1877)), Map("name"->"component1")),
-                SimplexPortalNode("slide",Location(63,9,2506),Some(Location(72,7,2969)), Map("id"->"slide", "name"->"slide1"))
-              )),
-              SimplexPortalNode("section",Location(75,5,3091),Some(Location(170,5,9289)), Map("id"->"content","name"->"section1")),
-              SimplexPortalNode("emptybody",Location(179,1,9716),Some(Location(179,20,9735))),
-              SimplexPortalNode("nobody",Location(180,1,9756),Some(Location(180,1,9756)))
-            ))
+            SimplexPortalNode("root",Location(1,1,0),Location(182,8,9789), Map.empty, List(
+              SimplexPortalNode("header",Location(49,5,1837),Location(73,5,2990), Map("name"->"header1"), List(
+                SimplexPortalNode("component",Location(50,9,1877),Location(50,9,1877), Map("name"->"component1"), List.empty, ""),
+                SimplexPortalNode("slide",Location(63,9,2506),Location(72,7,2969), Map("id"->"slide", "name"->"slide1"), List.empty, "")
+              ), ""),
+              SimplexPortalNode("section",Location(75,5,3091),Location(170,5,9289), Map("id"->"content","name"->"section1"), List.empty, ""),
+              SimplexPortalNode("emptybody",Location(179,1,9716),Location(179,20,9735), Map.empty, List.empty, ""),
+              SimplexPortalNode("nobody",Location(180,1,9756),Location(180,1,9756), Map.empty, List.empty, "")
+            ), "")
           )
         }
       }
