@@ -4,13 +4,13 @@ import org.scalatest.{GivenWhenThen, WordSpec}
 import better.files.File
 import org.scalatest.Matchers._
 
-class SimplexPortalNodeTest extends WordSpec with GivenWhenThen {
+class ParserTest extends WordSpec with GivenWhenThen {
 
     def testParserResults(input: String, expected: SimplexPortalNode): Unit = {
       Given("A xhtml template")
       val html = File(input).contentAsString
       When("search for nodes")
-      val result = SimplexPortalNode.treeNodes(html)
+      val result = Parser.treeNodes(html)
       Then("return only the expected list of them")
       result match {
         case Left(error) => fail(s"Threw ${error}")
