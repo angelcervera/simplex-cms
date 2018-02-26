@@ -26,14 +26,14 @@ case class UnHandledXMLStreamError(exception: XMLStreamException) extends Parser
 case class UnHandledException(exception: Throwable) extends ParserError
 
 /**
-  * Utilities to generate a parse an html file with simplex tags and generate a tree of components.
+  * Utilities to parse a HTML template and generate a tree of nodes.
   */
 object Parser {
 
   def treeNodes(template:String) = {
 
     def fromInternalToSimplexPortalNode(partial:PartialNode): SimplexPortalNode =
-      SimplexPortalNode(partial.`type`, partial.start, partial.end.get, partial.parameters, partial.children.map(fromInternalToSimplexPortalNode) , "")
+      SimplexPortalNode(partial.`type`, partial.start, partial.end.get, partial.parameters, partial.children.map(fromInternalToSimplexPortalNode) , List.empty)
 
     calculateInteralTree(template).right.map(fromInternalToSimplexPortalNode)
   }
@@ -43,22 +43,13 @@ object Parser {
     start: Location,
     end: Option[Location] = None,
     parameters: Map[String, String] = Map.empty,
-    children: List[PartialNode] = List.empty,
-    fullTag: Option[String] = None
+    children: List[PartialNode] = List.empty
   ) {
 
     def isOpen = end.isEmpty
     def isClosed = end.isDefined
 
-    /**
-      * Add a direct child.
-      *
-      * @param child
-      * @return
-      */
     def addChild(child: PartialNode): PartialNode = this.copy(children = children :+ child)
-
-    def updateLastChild(child: PartialNode): PartialNode = this.copy(children = children.init :+ child )
 
   }
 
@@ -175,6 +166,8 @@ object Parser {
       reader.close()
     }
   }
+
+  def fillTemplateFragments(template:String, root: SimplexPortalNode): SimplexPortalNode = ???
 
 
 //  def extractBody(text: String, nodeLocation: NodeLocation) = {

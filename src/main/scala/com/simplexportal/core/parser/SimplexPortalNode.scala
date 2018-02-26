@@ -10,7 +10,7 @@ case class SimplexPortalNode(
   end: Location,
   parameters: Map[String, String],
   children: List[SimplexPortalNode],
-  fullTag: String
+  templateFragments: List[String]
 ) {
 
   def stringAsTree(deep:Int = 0): String =
