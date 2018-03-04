@@ -32,8 +32,17 @@ object Parser {
 
   def treeNodes(template:String) = {
 
+    // TODO: Replace result type by Either[ParserError, SimplexPortalNode] for the case that end is None.
     def fromInternalToSimplexPortalNode(partial:PartialNode): SimplexPortalNode =
-      SimplexPortalNode(partial.`type`, partial.start, partial.end.get, partial.parameters, partial.children.map(fromInternalToSimplexPortalNode) , List.empty)
+      SimplexPortalNode(
+        `type` = partial.`type`,
+        start = partial.start,
+        end = partial.end.get,
+        parameters = partial.parameters,
+        children = partial.children.map(fromInternalToSimplexPortalNode),
+        templateFragments = fragments(template, partial)
+
+      )
 
     calculateInteralTree(template).right.map(fromInternalToSimplexPortalNode)
   }
@@ -167,24 +176,24 @@ object Parser {
     }
   }
 
-  def fillTemplateFragments(template:String, root: SimplexPortalNode): SimplexPortalNode = ???
+  def fragments(template: String, node: PartialNode): List[String]  = fragments(
+    template,
+    if(node.`type` == "root") 0 else template.indexOf('>', node.start.characterOffset) +1,
+    node.end.get.characterOffset,
+    node.children
+  )
 
+  def fragments(template: String, initialOffset: Int, endOffset: Int, children: List[PartialNode]): List[String] = {
 
-//  def extractBody(text: String, nodeLocation: NodeLocation) = {
-//    require(nodeLocation.end.isDefined, "End location must be defined")
-//    if(nodeLocation.start.characterOffset == nodeLocation.end.get.characterOffset)
-//      ""
-//    else
-//      text.substring(text.indexOf('>', nodeLocation.start.characterOffset) +1, nodeLocation.end.get.characterOffset)
-//  }
-//
-//  def extractBody(cmpMetadata: ComponentMetadata): String = {
-//    val startIdx = cmpMetadata.fullTag.indexOf(">")
-//    cmpMetadata.fullTag.lastIndexOf("<") match {
-//      case 0 => ""
-//      case endIdx if endIdx > 0 => cmpMetadata.fullTag.substring(startIdx +1, endIdx)
-//      case _ => throw new Exception("XML Format error. < char not found")
-//    }
-//  }
+    def addPart(offset: Int, start: Int, end: Int, acc: Seq[String]): (Int, Seq[String]) =
+      (template.indexOf('>', end) +1, acc :+ template.substring(offset, start))
+
+    val (offset, acc) = children
+      .collect { case PartialNode(_, start, Some(end), _, _) => (start.characterOffset, end.characterOffset) }
+      .foldLeft((initialOffset, Seq.empty[String])) { case ((offset, acc), (start, end)) => addPart(offset, start, end, acc) }
+
+    println((template.length, offset, endOffset, endOffset - offset, template.substring(endOffset+10)))
+    acc :+ template.substring(offset, endOffset) toList
+  }
 
 }
