@@ -15,7 +15,7 @@ import scala.annotation.tailrec
 
 
 
-trait ParserError extends SimplexPortalError
+sealed trait ParserError extends SimplexPortalError
 
 case class UnBalancedTree(message: String) extends ParserError
 
@@ -40,11 +40,11 @@ object Parser {
         end = partial.end.get,
         parameters = partial.parameters,
         children = partial.children.map(fromInternalToSimplexPortalNode),
-        templateFragments = fragments(template, partial)
+        templateFragments = extractFragments(template, partial)
 
       )
 
-    calculateInteralTree(template).right.map(fromInternalToSimplexPortalNode)
+    calculateInternalTree(template).right.map(fromInternalToSimplexPortalNode)
   }
 
   case class PartialNode(
@@ -139,7 +139,7 @@ object Parser {
   /**
     * Return a list of ordered nodes from a template.
     */
-  def calculateInteralTree(template:String) :  Either[ParserError, PartialNode] = {
+  def calculateInternalTree(template:String) :  Either[ParserError, PartialNode] = {
     val reader = new StringReader(template)
     try {
       val xml = xmlInputFactory.createXMLStreamReader(reader)
@@ -176,24 +176,21 @@ object Parser {
     }
   }
 
-  def fragments(template: String, node: PartialNode): List[String]  = fragments(
-    template,
-    if(node.`type` == "root") 0 else template.indexOf('>', node.start.characterOffset) +1,
-    node.end.get.characterOffset,
-    node.children
-  )
+  def extractFragments(template: String, node: PartialNode): List[String]  =
+    if(Option(node.start) == node.end)
+      List.empty
+    else {
 
-  def fragments(template: String, initialOffset: Int, endOffset: Int, children: List[PartialNode]): List[String] = {
+      def addPart(offset: Int, start: Int, end: Int, acc: Seq[String]): (Int, Seq[String]) =
+        (template.indexOf('>', end) +1, acc :+ template.substring(offset, start))
 
-    def addPart(offset: Int, start: Int, end: Int, acc: Seq[String]): (Int, Seq[String]) =
-      (template.indexOf('>', end) +1, acc :+ template.substring(offset, start))
+      val initialOffset = if(node.`type` == "root") 0 else template.indexOf('>', node.start.characterOffset) +1
 
-    val (offset, acc) = children
-      .collect { case PartialNode(_, start, Some(end), _, _) => (start.characterOffset, end.characterOffset) }
-      .foldLeft((initialOffset, Seq.empty[String])) { case ((offset, acc), (start, end)) => addPart(offset, start, end, acc) }
+      val (offset, acc) = node.children
+        .collect { case PartialNode(_, start, Some(end), _, _) => (start.characterOffset, end.characterOffset) }
+        .foldLeft((initialOffset, Seq.empty[String])) { case ((offset, acc), (start, end)) => addPart(offset, start, end, acc) }
 
-    println((template.length, offset, endOffset, endOffset - offset, template.substring(endOffset+10)))
-    acc :+ template.substring(offset, endOffset) toList
-  }
+      acc :+ template.substring(offset, node.end.get.characterOffset) toList
+    }
 
 }
