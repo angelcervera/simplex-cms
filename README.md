@@ -12,7 +12,7 @@ Think about to use Git as persistence layer, to have versioning and branches out
   - [ ] Content
   - [ ] Folder
   - [ ] Head
-  - [ ] Templates
+  - [X] Templates
 - [ ] Documentation (ML1)
 
 # No CMS stuff
@@ -39,3 +39,8 @@ Woodstox posts:
 - [Configuring Woodstox XML parser: Woodstox-specific properties / Woodstox Part 3](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
 - [GitHub](https://github.com/FasterXML/woodstox)
 - [Official website ???](https://fasterxml.github.io/woodstox/)
+
+Jackson:
+- [Home page](https://github.com/FasterXML/jackson)
+- [Scala module](https://github.com/FasterXML/jackson-module-scala)
+- [https://github.com/FasterXML/jackson-modules-java8](Allow Java8 Date)
