@@ -1,4 +1,4 @@
-package com.simplexportal.core.parser
+package com.simplexportal.core.datamodel
 
 case class Location(line: Long, column: Long, characterOffset: Int) {
   override def toString: String = s"[${line},${column},${characterOffset}]"

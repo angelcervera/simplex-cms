@@ -7,8 +7,8 @@ import javax.xml.stream.{XMLInputFactory, XMLStreamException, XMLStreamReader}
 
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
-import com.simplexportal.core.Configuration
-import com.simplexportal.core.datamodel.SimplexPortalError
+import com.simplexportal.core.{Configuration, datamodel}
+import com.simplexportal.core.datamodel.{Location, SimplexPortalError, SimplexPortalNode}
 import org.codehaus.stax2.XMLInputFactory2
 
 import scala.annotation.tailrec
@@ -34,7 +34,7 @@ object Parser {
 
     // TODO: Replace result type by Either[ParserError, SimplexPortalNode] for the case that end is None.
     def fromInternalToSimplexPortalNode(partial:PartialNode): SimplexPortalNode =
-      SimplexPortalNode(
+      datamodel.SimplexPortalNode(
         `type` = partial.`type`,
         start = partial.start,
         end = partial.end.get,
