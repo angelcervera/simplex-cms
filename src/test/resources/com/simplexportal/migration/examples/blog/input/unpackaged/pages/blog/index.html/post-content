@@ -1,0 +1,16 @@
+<simplex:content name="post-content">
+<article class="row hentry">
+<header class="col-md-12"><a class="entry-title" href="blog/2015/10/04/post1">Post1.</a>
+
+<p class="entry-metadata">Posted at <time class="published" datetime="2015-10-04 12:00:00">04/10/2015</time></p>
+</header>
+
+<div class="col-md-12 entry-summary">
+    <p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
+        passages, and more recently with desktop publishing software like Aldus PageMaker including
+        versions of Lorem Ipsum.</p>
+</div>
+
+<footer class="col-md-12"><a href="blog/2015/10/04/post1">Read more in the post ...</a></footer>
+</article>
+</simplex:content>

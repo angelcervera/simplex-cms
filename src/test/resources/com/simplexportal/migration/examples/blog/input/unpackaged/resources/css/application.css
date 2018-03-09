@@ -1,0 +1,191 @@
+body {
+    margin: 70px 0 0;
+}
+
+@media (max-width: 360px) {
+    .navbar-brand {
+        font-size: 100%;
+    }
+}
+
+nav.main-navbar .navbar-brand, #bs-content-main-navbar-collapse li {
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+nav.main-navbar .navbar-brand {
+    font-weight: bold;
+}
+
+header {
+	text-align: center;
+    border-bottom: 1px solid #BEBEBE;
+    margin-bottom: 40px;
+}
+
+header p {
+	text-align: center;	
+}
+
+footer {
+    margin-top: 100px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+p {
+    margin: 0 0 5px;
+}
+
+p, li {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px;
+    text-align: justify;
+}
+
+h1 {
+    color: #337ab7;
+}
+
+h2 {
+    background-color: #BEBEBE;
+    padding: 5px 10px;
+    font-size: 25px;
+}
+
+h3 {
+    background-color: rgba(190, 190, 190, 0.38);
+    padding: 5px 10px;
+    font-size: 25px;
+}
+
+h4 {
+    border-bottom: 1px dotted;
+    font-size: 20px;
+    padding-bottom: 10px;
+    padding-top: 15px;
+}
+
+.project {
+    padding-left: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.skills {
+    font-style: italic;
+    font-weight: bolder;
+}
+
+.company {
+	font-weight: bolder;
+}
+
+.name {
+	font-style: italic;
+}
+
+.position {
+	font-style: italic;
+}
+
+.social {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+table.table > thead > tr > th {
+	text-align: center;
+	vertical-align: top;
+}
+
+table.table > tbody > tr > td {
+	text-align: center;
+}
+
+aside.personal-info {
+    padding-right: 30px;
+    padding-left: 30px;
+    text-align: center;
+}
+
+aside.personal-info h1 {
+    font-size: 75%;
+    margin-top: 5px;
+}
+
+
+
+/* Blog */
+
+article.hentry, article.hentry p, article.hentry li,
+div.hentry article, div.hentry article p, div.hentry article li {
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+article.hentry,
+div.hentry article {
+    margin-bottom: 30px;
+}
+
+article.hentry header,
+div.hentry article header {
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1.1;
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+
+article.hentry p.entry-metadata,
+div.hentry article p.entry-metadata {
+    color: gray;
+    font-size: 40%;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 40px;
+    text-align: left;
+}
+
+article.hentry footer,
+div.hentry article footer {
+    margin-top: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    border-bottom: 1px solid #BEBEBE;
+}
+
+article.hentry a:hover,
+div.hentry article a:hover {
+    cursor: pointer;
+}
+
+article.hentry h2,
+div.hentry article h2 {
+    color: #337ab7;
+    font-size: 30px;
+    background-color: transparent;
+    padding: 0;
+}
+
+article.hentry h3,
+div.hentry article h3 {
+    color: #337ab7;
+    font-size: 20px;
+    background-color: transparent;
+    padding: 0;
+}
+
+#share-buttons {
+	text-align: left;
+}
+
+#share-buttons .stButton .stFb, #share-buttons .stButton .stTwbutton, #share-buttons .stButton .stMainServices {
+  height:auto;
+}
+
+#share-buttons .stButton .stButton_gradient {
+  height: auto;
+}
+
+

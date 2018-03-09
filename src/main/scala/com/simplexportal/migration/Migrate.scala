@@ -10,20 +10,21 @@ object Migrate {
 
   lazy val pp = new scala.xml.PrettyPrinter(Int.MaxValue, 4)
 
-  def migratePages(in: Path, out: Path) = {
+  def migrate(in: Path, out: Path) = {
     val exportRoot = out.toFile.toScala
 
     val backup = XML.load( (in.toString / "metadata.xml").url)
     println( s"Importing metadata backup ${(backup \ "code") text} to ${out.toAbsolutePath}")
 
-    backup \ "pages" \ "page" foreach( page => {
-      val path = (page \ "path").text
+    // Migrate pages
+    backup \ "pages" \ "page" foreach( pageMetadata => {
+      val path = (pageMetadata \ "path").text
       val pageRoot = ( exportRoot / s"cms/pages/$path" ) createIfNotExists(true, true)
-      (page \ "components" \ "component") foreach(component => {
-        val cmpName = (component \ "name").text
+      (pageMetadata \ "components" \ "component") foreach(componentMetadata => {
+        val cmpName = (componentMetadata \ "name").text
 
         // Migrate metadata
-        ( pageRoot / s"$cmpName.metadata.xml" ).write(pp.format(component))
+        ( pageRoot / s"$cmpName.metadata.xml" ) write(pp.format(componentMetadata))
 
         // Migrate data
         val content = ( in.toString / s"pages${path}" / cmpName ).contentAsString
@@ -31,9 +32,32 @@ object Migrate {
 
       })
     })
-  }
 
-  def migrate(in: Path, outPath: Path) = {
+    // Migrate Templates.
+    backup \ "templates" \ "template" foreach( templateMetadata => {
+      val path = (templateMetadata \ "path").text
+      val templateRoot = ( exportRoot / s"cms/templates${path}" ) createIfNotExists(true, true)
+
+      // Migrate metadata
+      ( templateRoot / "metadata.xml" ) write(pp.format(templateMetadata))
+
+      // Migrate data
+      ( in.toString / s"templates${path}" ) copyTo( templateRoot / "data.html", true)
+
+    })
+
+    // Migrate static resources
+    backup \ "resources" \ "resource" foreach( resourceMetadata => {
+      val path = (resourceMetadata \ "path").text.toFile
+      val resourceRoot = ( exportRoot / s"cms/resources/metadata${path.parent}" ) createIfNotExists(true, true)
+
+      // Migrate metadata
+      ( resourceRoot / s"${path.name}.metadata.xml" ) write(pp.format(resourceMetadata))
+
+      // Migrate data
+      ( in.toString / s"resources${path}" ) copyTo( resourceRoot / path.name, true)
+
+    })
 
   }
 
