@@ -21,9 +21,7 @@ lazy val root = (project in file(".")).
       "org.scala-lang.modules"       %% "scala-xml"                 % "1.1.0",
       "com.github.pathikrit"         %% "better-files"              % "3.4.0"
     ) ++ Seq( // Test scope dependencies
-      "org.scalatest"          %% "scalatest"            % scalatestVersion,
-      "com.github.pathikrit"   %% "better-files"         % "3.4.0"
-
+      "org.scalatest"          %% "scalatest"            % scalatestVersion
     ).map(_ % Test)
   )
 
