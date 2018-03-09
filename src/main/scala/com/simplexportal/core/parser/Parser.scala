@@ -15,15 +15,21 @@ import scala.annotation.tailrec
 
 
 
-sealed trait ParserError extends SimplexPortalError
+sealed trait ParserError extends SimplexPortalError {
+  val message: String
+}
 
 case class UnBalancedTree(message: String) extends ParserError
 
 case class UnCompleteTree(message: String = "UnComplete tree") extends ParserError
 
-case class UnHandledXMLStreamError(exception: XMLStreamException) extends ParserError
+case class UnHandledXMLStreamError(message: String, exception: XMLStreamException) extends ParserError
 
-case class UnHandledException(exception: Throwable) extends ParserError
+case class UnHandledException(message: String, exception: Throwable) extends ParserError
+
+object UnHandledException {
+  def apply(exception: Throwable): UnHandledException = new UnHandledException(exception.getMessage, exception)
+}
 
 /**
   * Utilities to parse a HTML template and generate a tree of nodes.
@@ -37,7 +43,7 @@ object Parser {
       datamodel.SimplexPortalNode(
         `type` = partial.`type`,
         start = partial.start,
-        end = partial.end.get,
+        end = partial.end.getOrElse(throw new Exception("Expected end location but still None")),
         parameters = partial.parameters,
         children = partial.children.map(fromInternalToSimplexPortalNode),
         templateFragments = extractFragments(template, partial)
@@ -169,7 +175,6 @@ object Parser {
       next(List(PartialNode("root", xml.getLocation.htmlParserLocation )))
 
     } catch {
-      case ex: XMLStreamException => Left(UnHandledXMLStreamError(ex))
       case ex: Throwable => Left(UnHandledException(ex))
     } finally {
       reader.close()
