@@ -1,0 +1,5 @@
+<resource>
+    <encoding>UTF-8</encoding>
+    <mimeType>text/xml</mimeType>
+    <path>/blog/rss.xml</path>
+</resource>

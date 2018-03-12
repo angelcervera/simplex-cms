@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Angel Cervera / BigData, Java, Scala and more</title>
+        <description>Angel Cervera</description>
+        <link>http://www.acervera.com/blog</link>
+        <managingEditor>angel@acervera.com (Angel Cervera)</managingEditor>
+        <lastBuildDate>05 Mar 2016 12:00:00 GMT</lastBuildDate>
+        <item>
+            <title>Post1.</title>
+            <pubDate>04 Oct 2015 12:00:00 GMT</pubDate>
+            <description>BlaBlaBla</description>
+            <link>http://www.acervera.com/blog/2015/10/04/post1</link>
+            <author>angel@acervera.com (Angel Cervera)</author>
+        </item>
+    </channel>
+</rss>

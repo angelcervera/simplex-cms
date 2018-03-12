@@ -1,0 +1,6 @@
+<component>
+    <name>post-content</name>
+    <orderExecution>100</orderExecution>
+    <parameters/>
+    <type>content</type>
+</component>
