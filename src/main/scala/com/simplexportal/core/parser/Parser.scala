@@ -8,14 +8,14 @@ import javax.xml.stream.{XMLInputFactory, XMLStreamException, XMLStreamReader}
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
 import com.simplexportal.core.{Configuration, datamodel}
-import com.simplexportal.core.datamodel.{Location, SimplexPortalError, SimplexPortalNode}
+import com.simplexportal.core.datamodel.{Location, Error, ComponentDefinition}
 import org.codehaus.stax2.XMLInputFactory2
 
 import scala.annotation.tailrec
 
 
 
-sealed trait ParserError extends SimplexPortalError {
+sealed trait ParserError extends Error {
   val message: String
 }
 
@@ -39,8 +39,8 @@ object Parser {
   def treeNodes(template:String) = {
 
     // TODO: Replace result type by Either[ParserError, SimplexPortalNode] for the case that end is None.
-    def fromInternalToSimplexPortalNode(partial:PartialNode): SimplexPortalNode =
-      datamodel.SimplexPortalNode(
+    def fromInternalToSimplexPortalNode(partial:PartialNode): ComponentDefinition =
+      datamodel.ComponentDefinition(
         `type` = partial.`type`,
         start = partial.start,
         end = partial.end.getOrElse(throw new Exception("Expected end location but still None")),

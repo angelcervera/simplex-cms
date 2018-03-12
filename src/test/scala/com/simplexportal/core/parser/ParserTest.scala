@@ -2,16 +2,16 @@ package com.simplexportal.core.parser
 
 import org.scalatest.{GivenWhenThen, WordSpec}
 import better.files.File
-import com.simplexportal.core.datamodel.{Location, SimplexPortalNode}
+import com.simplexportal.core.datamodel.{Location, ComponentDefinition}
 import com.simplexportal.core.parser.Parser.PartialNode
 import org.scalatest.Matchers._
 
 class ParserTest extends WordSpec with GivenWhenThen {
 
   val Q = "\""
-  implicit  class SimplexPortalNodeTestHelpers(node: SimplexPortalNode) {
+  implicit  class SimplexPortalNodeTestHelpers(node: ComponentDefinition) {
 
-    implicit def cleanTemplateFragments: SimplexPortalNode = node.copy(templateFragments = List.empty, children = node.children.map(_.cleanTemplateFragments))
+    implicit def cleanTemplateFragments: ComponentDefinition = node.copy(templateFragments = List.empty, children = node.children.map(_.cleanTemplateFragments))
 
     implicit def definition: String = {
       def location(l: Location) = s"Location(${l.line},${l.column},${l.characterOffset})"
@@ -19,7 +19,7 @@ class ParserTest extends WordSpec with GivenWhenThen {
         case Nil => "Map.empty"
         case m => m.map{case (k,v) => s"$Q$k$Q -> $Q$v$Q"} mkString ("Map(", ",",")")
       }
-      def children(nodes: List[SimplexPortalNode]) = nodes match {
+      def children(nodes: List[ComponentDefinition]) = nodes match {
         case Nil => "List.empty"
         case _ => nodes.map(_.definition).mkString("List(",",",")")
       }
@@ -34,9 +34,9 @@ class ParserTest extends WordSpec with GivenWhenThen {
       children = node.children.map(_.toPartialNode)
     )
 
-    implicit def findByName(name:String): Option[SimplexPortalNode] = {
+    implicit def findByName(name:String): Option[ComponentDefinition] = {
 
-      def onChildren(name: String, nodes: Seq[SimplexPortalNode]): Option[SimplexPortalNode] = nodes match {
+      def onChildren(name: String, nodes: Seq[ComponentDefinition]): Option[ComponentDefinition] = nodes match {
         case Nil => None
         case head::tail => head.findByName(name).orElse(onChildren(name, tail))
       }
@@ -50,12 +50,12 @@ class ParserTest extends WordSpec with GivenWhenThen {
 
   }
 
-  def testParserResults(template: String, expected: SimplexPortalNode): Unit = Parser.treeNodes(template) match {
+  def testParserResults(template: String, expected: ComponentDefinition): Unit = Parser.treeNodes(template) match {
     case Left(error) => fail(s"Threw ${error}")
     case Right(r) => assert(r == expected, s"\nExpected:\n${expected.definition}\nCurrent:\n${r.definition}")
   }
 
-  def testParserResultsNoContent(template: String, expected: SimplexPortalNode): Unit = Parser.treeNodes(template) match {
+  def testParserResultsNoContent(template: String, expected: ComponentDefinition): Unit = Parser.treeNodes(template) match {
     case Left(error) => fail(s"Threw ${error}")
     case Right(r) => assert(r.cleanTemplateFragments == expected.cleanTemplateFragments, s"\nExpected:\n${expected.cleanTemplateFragments.definition}\nCurrent:\n${r.cleanTemplateFragments.definition}")
   }
@@ -66,15 +66,15 @@ class ParserTest extends WordSpec with GivenWhenThen {
 
   val simpleBodyDivTemplate = File("src/test/resources/com/simplexportal/core/parser/simple_body_div.html").contentAsString
   val simpleBodyDivTree =
-    SimplexPortalNode("root", Location(1,1,0), Location(17,1,519), Map.empty, List(
-      SimplexPortalNode("body", Location(3,5,86), Location(12,5,379), Map("name" -> "body1"), List(
-        SimplexPortalNode("div", Location(4,9,122), Location(10,9,333), Map("class" -> "bg-top","name" -> "div1"), List(
-          SimplexPortalNode("div", Location(6,13,203), Location(8,13,283), Map("class" -> "bg-top","name" -> "div2"), List.empty, List.empty)
+    ComponentDefinition("root", Location(1,1,0), Location(17,1,519), Map.empty, List(
+      ComponentDefinition("body", Location(3,5,86), Location(12,5,379), Map("name" -> "body1"), List(
+        ComponentDefinition("div", Location(4,9,122), Location(10,9,333), Map("class" -> "bg-top","name" -> "div1"), List(
+          ComponentDefinition("div", Location(6,13,203), Location(8,13,283), Map("class" -> "bg-top","name" -> "div2"), List.empty, List.empty)
         ), List.empty),
-        SimplexPortalNode("nobody2", Location(11,9,356), Location(11,9,356), Map.empty, List.empty, List.empty)
+        ComponentDefinition("nobody2", Location(11,9,356), Location(11,9,356), Map.empty, List.empty, List.empty)
       ), List.empty),
-      SimplexPortalNode("emptybody", Location(14,5,420), Location(14,41,456), Map("name" -> "emptybody"), List.empty, List.empty),
-      SimplexPortalNode("nobody", Location(14,63,478), Location(14,63,478), Map("name" -> "nobody"), List.empty, List.empty)
+      ComponentDefinition("emptybody", Location(14,5,420), Location(14,41,456), Map("name" -> "emptybody"), List.empty, List.empty),
+      ComponentDefinition("nobody", Location(14,63,478), Location(14,63,478), Map("name" -> "nobody"), List.empty, List.empty)
     ), List.empty)
 
 
@@ -86,14 +86,14 @@ class ParserTest extends WordSpec with GivenWhenThen {
 
   val template1Template = File("src/test/resources/com/simplexportal/core/parser/template1.html").contentAsString
   val template1Tree =
-    SimplexPortalNode("root",Location(1,1,0),Location(182,8,9789), Map.empty, List(
-      SimplexPortalNode("header",Location(49,5,1837),Location(73,5,2990), Map("name"->"header1"), List(
-        SimplexPortalNode("component",Location(50,9,1877),Location(50,9,1877), Map("name"->"component1"), List.empty, List.empty),
-        SimplexPortalNode("slide",Location(63,9,2506),Location(72,7,2969), Map("id"->"slide", "name"->"slide1"), List.empty, List.empty)
+    ComponentDefinition("root",Location(1,1,0),Location(182,8,9789), Map.empty, List(
+      ComponentDefinition("header",Location(49,5,1837),Location(73,5,2990), Map("name"->"header1"), List(
+        ComponentDefinition("component",Location(50,9,1877),Location(50,9,1877), Map("name"->"component1"), List.empty, List.empty),
+        ComponentDefinition("slide",Location(63,9,2506),Location(72,7,2969), Map("id"->"slide", "name"->"slide1"), List.empty, List.empty)
       ), List.empty),
-      SimplexPortalNode("section",Location(75,5,3091),Location(170,5,9289), Map("id"->"content","name"->"section1"), List.empty, List.empty),
-      SimplexPortalNode("emptybody",Location(179,1,9716),Location(179,20,9735), Map.empty, List.empty, List.empty),
-      SimplexPortalNode("nobody",Location(180,1,9756),Location(180,1,9756), Map.empty, List.empty, List.empty)
+      ComponentDefinition("section",Location(75,5,3091),Location(170,5,9289), Map("id"->"content","name"->"section1"), List.empty, List.empty),
+      ComponentDefinition("emptybody",Location(179,1,9716),Location(179,20,9735), Map.empty, List.empty, List.empty),
+      ComponentDefinition("nobody",Location(180,1,9756),Location(180,1,9756), Map.empty, List.empty, List.empty)
     ), List.empty)
 
     "tree nodes" when {

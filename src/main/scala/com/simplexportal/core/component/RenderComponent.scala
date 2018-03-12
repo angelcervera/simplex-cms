@@ -1,13 +1,13 @@
 package com.simplexportal.core.component
 
-import com.simplexportal.core.datamodel.SimplexPortalError
+import com.simplexportal.core.datamodel.Error
 
 /**
   * Basic component that execute inner components and replace the full tag with the result.
   */
 object RenderComponent extends Component {
 
-  override def render(component: ComponentMetadata/*, renderContext: RenderContext*/): Either[SimplexPortalError, String] = ???
+  override def render(component: ComponentMetadata/*, renderContext: RenderContext*/): Either[Error, String] = ???
 //  {
 //
 //
@@ -31,7 +31,7 @@ object RenderComponent extends Component {
 //  }
 
   // TODO: Generalize because will be used by all components, except for the constant one.
-  def processInnerComponents(innerComponents: List[ComponentMetadata]): List[Either[SimplexPortalError,String]] = ???
+  def processInnerComponents(innerComponents: List[ComponentMetadata]): List[Either[Error,String]] = ???
 //    innerComponents.map(cmpMetadata => for {
 //        renderer <- Renderer.lookup(cmpMetadata.`type`).right
 //        inner <- renderer.render(cmpMetadata.fullTag, renderContext).right

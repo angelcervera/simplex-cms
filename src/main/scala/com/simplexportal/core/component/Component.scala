@@ -1,6 +1,6 @@
 package com.simplexportal.core.component
 
-import com.simplexportal.core.datamodel.SimplexPortalError
+import com.simplexportal.core.datamodel.Error
 
 case class ComponentMetadata(
 
@@ -25,7 +25,7 @@ case class ComponentMetadata(
 )
 
 
-trait ComponentError extends SimplexPortalError
+trait ComponentError extends Error
 
 case class ComponentNotFound(id: String) extends ComponentError {
   override def toString: String = s"$id not found in the list of registered components."
@@ -41,7 +41,7 @@ case class ComponentNotFound(id: String) extends ComponentError {
   * Implementation of a component, that is going to take on ComponentMetadata and render it.
   */
 trait Component {
-  def render(component: ComponentMetadata/*, renderContext: RenderContext*/): Either[SimplexPortalError, String]
+  def render(component: ComponentMetadata/*, renderContext: RenderContext*/): Either[Error, String]
 }
 
 object Component {
@@ -52,7 +52,7 @@ object Component {
     "render" -> RenderComponent
   )
 
-  def lookup(name: String): Either[SimplexPortalError, Component] =
+  def lookup(name: String): Either[Error, Component] =
     components.get(name) match {
       case Some(parser) => Right(parser)
       case None => Left(ComponentNotFound(name))
