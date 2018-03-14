@@ -1,4 +1,4 @@
-package com.simplexportal.core.parser
+package com.simplexportal.core
 
 import java.io.StringReader
 import javax.xml.stream
@@ -7,8 +7,7 @@ import javax.xml.stream.{XMLInputFactory, XMLStreamException, XMLStreamReader}
 
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
-import com.simplexportal.core.{Configuration, datamodel}
-import com.simplexportal.core.datamodel.{Location, Error, ComponentDefinition}
+import com.simplexportal.core.datamodel.{ComponentDefinition, Error, Location}
 import org.codehaus.stax2.XMLInputFactory2
 
 import scala.annotation.tailrec

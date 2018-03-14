@@ -1,6 +1,6 @@
 package com.simplexportal.core.orchestration
 
-import com.simplexportal.core.parser.ParserError
+import com.simplexportal.core.ParserError
 
 object SimplexCore {
 

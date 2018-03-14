@@ -1,10 +1,10 @@
-package com.simplexportal.core.parser
+package com.simplexportal.core
 
-import org.scalatest.{GivenWhenThen, WordSpec}
 import better.files.File
-import com.simplexportal.core.datamodel.{Location, ComponentDefinition}
-import com.simplexportal.core.parser.Parser.PartialNode
+import com.simplexportal.core.Parser.PartialNode
+import com.simplexportal.core.datamodel.{ComponentDefinition, Location}
 import org.scalatest.Matchers._
+import org.scalatest.{GivenWhenThen, WordSpec}
 
 class ParserTest extends WordSpec with GivenWhenThen {
 
