@@ -106,6 +106,41 @@ class ParserTest extends WordSpec with GivenWhenThen {
           testParserResultsNoContent( template1Template, template1Tree )
         }
       }
+      "respect init and the end of the template, out of components" in {
+        Parser.treeNodes("<html>start<simplex:c>c<simplex:d>d</simplex:d>c<simplex:e>e</simplex:e>c</simplex:c>end</html>") match {
+          case Right(tree) => {
+            assert( tree.children(0).templateFragments == List("c", "c","c") )
+            assert( tree.templateFragments == List("<html>start", "end</html>"))
+          }
+          case Left(error) => fail(error.message)
+        }
+      }
+      "generate num. components +1 fragments" when {
+        "there are content before, after and in the middle" in {
+          Parser.treeNodes("<simplex:c>c<simplex:d>d</simplex:d>c<simplex:e>e</simplex:e>c</simplex:c>") match {
+            case Right(tree) => assert( tree.children(0).templateFragments == List("c", "c","c") )
+            case Left(error) => fail(error.message)
+          }
+        }
+        "there is nothing before the first component" in {
+          Parser.treeNodes("<simplex:c><simplex:d>d</simplex:d>c<simplex:e>e</simplex:e>c</simplex:c>") match {
+            case Right(tree) => assert( tree.children(0).templateFragments == List("", "c","c") )
+            case Left(error) => fail(error.message)
+          }
+        }
+        "there is nothing after the last component" in {
+          Parser.treeNodes("<simplex:c>c<simplex:d>d</simplex:d>c<simplex:e>e</simplex:e></simplex:c>") match {
+            case Right(tree) => assert( tree.children(0).templateFragments == List("c", "c","") )
+            case Left(error) => fail(error.message)
+          }
+        }
+        "there is nothing between all components" in {
+          Parser.treeNodes("<simplex:c><simplex:d>d</simplex:d><simplex:e>e</simplex:e></simplex:c>") match {
+            case Right(tree) => assert( tree.children(0).templateFragments == List("", "","") )
+            case Left(error) => fail(error.message)
+          }
+        }
+      }
     }
 
   "fragments" should {
@@ -146,34 +181,6 @@ class ParserTest extends WordSpec with GivenWhenThen {
         assert(fragments.size == 0)
       }
     }
-
-    "to generate num. components +1 fragments" when {
-      "there are content before, after and in the middle" in {
-        Parser.treeNodes("<simplex:c>c<simplex:d>d</simplex:d>c<simplex:e>e</simplex:e>c</simplex:c>") match {
-          case Right(tree) => assert( tree.children(0).templateFragments == List("c", "c","c") )
-          case Left(error) => fail(error.message)
-        }
-      }
-      "there is nothing before the first component" in {
-        Parser.treeNodes("<simplex:c><simplex:d>d</simplex:d>c<simplex:e>e</simplex:e>c</simplex:c>") match {
-          case Right(tree) => assert( tree.children(0).templateFragments == List("", "c","c") )
-          case Left(error) => fail(error.message)
-        }
-      }
-      "there is nothing after the last component" in {
-        Parser.treeNodes("<simplex:c>c<simplex:d>d</simplex:d>c<simplex:e>e</simplex:e></simplex:c>") match {
-          case Right(tree) => assert( tree.children(0).templateFragments == List("c", "c","") )
-          case Left(error) => fail(error.message)
-        }
-      }
-      "there is nothing between all components" in {
-        Parser.treeNodes("<simplex:c><simplex:d>d</simplex:d><simplex:e>e</simplex:e></simplex:c>") match {
-          case Right(tree) => assert( tree.children(0).templateFragments == List("", "","") )
-          case Left(error) => fail(error.message)
-        }
-      }
-    }
-
   }
 
 }
