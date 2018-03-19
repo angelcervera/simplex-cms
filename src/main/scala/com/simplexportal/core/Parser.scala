@@ -35,7 +35,7 @@ object UnHandledException {
   */
 object Parser {
 
-  def treeNodes(template:String) = {
+  def treeNodes(template:String): Either[ParserError, ComponentDefinition] = {
 
     // TODO: Replace result type by Either[ParserError, SimplexPortalNode] for the case that end is None.
     def fromInternalToSimplexPortalNode(partial:PartialNode): ComponentDefinition =
@@ -46,7 +46,6 @@ object Parser {
         parameters = partial.parameters,
         children = partial.children.map(fromInternalToSimplexPortalNode),
         templateFragments = extractFragments(template, partial)
-
       )
 
     calculateInternalTree(template).right.map(fromInternalToSimplexPortalNode)
