@@ -1,8 +1,10 @@
 package com.simplexportal.migration
 
-import java.nio.file.Path
+import java.nio.file.{Path, Paths}
 
 import better.files._
+import net.ceedubs.ficus.Ficus._
+import com.simplexportal.core.Configuration
 
 import scala.xml.XML
 
@@ -60,5 +62,14 @@ object Migrate {
     })
 
   }
+
+}
+
+object MigrateMain extends App {
+
+  Migrate.migrate(
+    Paths.get(Configuration.config.as[String]("simplex.migration.in")),
+    Paths.get(Configuration.config.as[String]("simplex.migration.out"))
+  )
 
 }
