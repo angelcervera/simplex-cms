@@ -1,0 +1,4 @@
+<page>
+    <path>/blog/index.html</path>
+    <template>/blog/list-posts.html</template>
+</page>

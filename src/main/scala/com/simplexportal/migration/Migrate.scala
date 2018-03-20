@@ -21,7 +21,11 @@ object Migrate {
     // Migrate pages
     backup \ "pages" \ "page" foreach( pageMetadata => {
       val path = (pageMetadata \ "path").text
+      val template = (pageMetadata \ "template").text
       val pageRoot = ( exportRoot / s"cms/pages/$path" ) createIfNotExists(true, true)
+
+      (pageRoot / "metadata.xml") write(pp.format( XML.loadString( s"<page><path>${path}</path><template>${template}</template></page>" ) ))
+
       (pageMetadata \ "components" \ "component") foreach(componentMetadata => {
         val cmpName = (componentMetadata \ "name").text
 
