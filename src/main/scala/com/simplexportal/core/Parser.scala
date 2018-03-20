@@ -35,6 +35,11 @@ object UnHandledException {
   */
 object Parser {
 
+  /**
+    * Build a tree of nodes from a template.
+    *
+    * @param template xHTML template. Important: Must be XML
+    */
   def treeNodes(template:String): Either[ParserError, ComponentDefinition] = {
 
     // TODO: Replace result type by Either[ParserError, SimplexPortalNode] for the case that end is None.

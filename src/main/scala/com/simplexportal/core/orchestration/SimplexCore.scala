@@ -1,16 +1,13 @@
 package com.simplexportal.core.orchestration
 
-import com.simplexportal.core.ParserError
+import com.simplexportal.core.{Configuration}
 
-object SimplexCore {
+object SimplexCore extends App {
 
-//  /**
-//    * Extract all components in the first level, execute the component and fill with the result.
-//    * @param text
-//    * @param context
-//    * @return
-//    */
-//  def render(text: String, context: RenderContext): Either[ParserError, String] = ???
+
+  println(Configuration.storage)
+  println(Configuration.output)
+
 
 }
 
