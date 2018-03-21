@@ -5,12 +5,11 @@ import java.nio.file.{Path, Paths}
 import better.files._
 import net.ceedubs.ficus.Ficus._
 import com.simplexportal.core.Configuration
+import com.simplexportal.core.datamodel.Metadata._
 
 import scala.xml.XML
 
 object Migrate {
-
-  lazy val pp = new scala.xml.PrettyPrinter(Int.MaxValue, 4)
 
   def migrate(in: Path, out: Path) = {
     val exportRoot = out.toFile.toScala
@@ -20,17 +19,24 @@ object Migrate {
 
     // Migrate pages
     backup \ "pages" \ "page" foreach( pageMetadata => {
+
       val path = (pageMetadata \ "path").text
       val template = (pageMetadata \ "template").text
       val pageRoot = ( exportRoot / s"cms/pages/$path" ) createIfNotExists(true, true)
 
-      (pageRoot / "metadata.xml") write(pp.format( XML.loadString( s"<page><path>${path}</path><template>${template}</template></page>" ) ))
+      PageMetadata(path, template) toJson (pageRoot / "metadata.json")
 
       (pageMetadata \ "components" \ "component") foreach(componentMetadata => {
         val cmpName = (componentMetadata \ "name").text
 
         // Migrate metadata
-        ( pageRoot / s"$cmpName.metadata.xml" ) write(pp.format(componentMetadata))
+        ComponentMetadata(
+          `type` = (componentMetadata \ "type").text,
+          name = cmpName,
+          orderExecution = (componentMetadata \ "orderExecution").text.toInt,
+          parameters = Map.empty // FIXME: extract properties (componentMetadata \ "parameters").map(node=>node.namespace->node.text).toMap
+        ) toJson ( pageRoot / s"$cmpName.metadata.json" )
+
 
         // Migrate data
         val content = ( in.toString / s"pages${path}" / cmpName ).contentAsString
@@ -45,7 +51,11 @@ object Migrate {
       val templateRoot = ( exportRoot / s"cms/templates${path}" ) createIfNotExists(true, true)
 
       // Migrate metadata
-      ( templateRoot / "metadata.xml" ) write(pp.format(templateMetadata))
+      TemplateMetadata(
+        path = path,
+        encoding = (templateMetadata \ "encoding").text,
+        mimeType = (templateMetadata \ "mimeType").text
+      ) toJson ( templateRoot / "metadata.json" )
 
       // Migrate data
       ( in.toString / s"templates${path}" ) copyTo( templateRoot / "data.html", true)
@@ -58,7 +68,11 @@ object Migrate {
       val resourceRoot = ( exportRoot / s"cms/resources/metadata${path.parent}" ) createIfNotExists(true, true)
 
       // Migrate metadata
-      ( resourceRoot / s"${path.name}.metadata.xml" ) write(pp.format(resourceMetadata))
+      ResourceMetadata(
+        path = (resourceMetadata \ "path").text,
+        encoding = (resourceMetadata \ "encoding").text,
+        mimeType = (resourceMetadata \ "mimeType").text
+      ) toJson ( resourceRoot / s"${path.name}.metadata.json" )
 
       // Migrate data
       ( in.toString / s"resources${path}" ) copyTo( resourceRoot / path.name, true)

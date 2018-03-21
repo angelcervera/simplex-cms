@@ -9,7 +9,7 @@ class MigrateTest extends WordSpec {
   "MigrateTest" should {
 
     "migrateFromFolder" in {
-      Migrate.migrate(Paths.get("src/test/resources/com/simplexportal/migration/examples/blog/input/unpackaged"), Paths.get("target/out/migrate"))
+      Migrate.migrate(Paths.get("src/test/resources/com/simplexportal/migration/examples/blog/input/unpackaged"), Paths.get("target/out/migration"))
     }
 
   }

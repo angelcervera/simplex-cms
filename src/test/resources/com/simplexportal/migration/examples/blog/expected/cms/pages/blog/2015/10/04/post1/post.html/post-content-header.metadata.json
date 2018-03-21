@@ -1,0 +1,6 @@
+{
+  "type" : "content",
+  "name" : "post-content-header",
+  "orderExecution" : 100,
+  "parameters" : { }
+}

@@ -1,0 +1,6 @@
+{
+  "type" : "content",
+  "name" : "post-content",
+  "orderExecution" : 100,
+  "parameters" : { }
+}
