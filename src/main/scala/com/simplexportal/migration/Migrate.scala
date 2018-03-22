@@ -11,71 +11,84 @@ import scala.xml.XML
 
 object Migrate {
 
+  private def mkRelative(path: String) = if(path.startsWith("/")) "." + path else path
+
+  private def createFileReferences(out: File, path: String): (File, File) = {
+    val file: File = ( out / mkRelative(path) )
+    val parent = file.parent.createDirectories()
+
+    (file, parent)
+  }
+
   def migrate(in: Path, out: Path) = {
-    val exportRoot = out.toFile.toScala
+    val exportRoot = out.toFile.toScala  createDirectories
+
 
     val backup = XML.load( (in.toString / "metadata.xml").url)
     println( s"Importing metadata backup ${(backup \ "code") text} to ${out.toAbsolutePath}")
 
     // Migrate pages
-    backup \ "pages" \ "page" foreach( pageMetadata => {
+    backup \ "pages" \ "page" foreach( xmlPageMetadata => {
 
-      val path = (pageMetadata \ "path").text
-      val template = (pageMetadata \ "template").text
-      val pageRoot = ( exportRoot / s"cms/pages/$path" ) createIfNotExists(true, true)
+      val path = (xmlPageMetadata \ "path").text
+      val template = (xmlPageMetadata \ "template").text
 
-      PageMetadata(path, template) toJson (pageRoot / "metadata.json")
+      val (fileMeta, parentMeta) = createFileReferences( (exportRoot / "meta") , path )
+      PageMetadata(path, template) toJson (parentMeta / s"${fileMeta.name}.json")
 
-      (pageMetadata \ "components" \ "component") foreach(componentMetadata => {
-        val cmpName = (componentMetadata \ "name").text
+      val (fileData, parentData) = createFileReferences( (exportRoot / "data"), path )
+      (xmlPageMetadata \ "components" \ "component") foreach(xmlCmpMetadata => {
+        val cmpName = (xmlCmpMetadata \ "name").text
 
         // Migrate metadata
         ComponentMetadata(
-          `type` = (componentMetadata \ "type").text,
+          `type` = (xmlCmpMetadata \ "type").text,
           name = cmpName,
-          orderExecution = (componentMetadata \ "orderExecution").text.toInt,
+          orderExecution = (xmlCmpMetadata \ "orderExecution").text.toInt,
           parameters = Map.empty // FIXME: extract properties (componentMetadata \ "parameters").map(node=>node.namespace->node.text).toMap
-        ) toJson ( pageRoot / s"$cmpName.metadata.json" )
+        ) toJson (parentMeta / s"${fileMeta.name}_${cmpName}.json")
 
 
         // Migrate data
         val content = ( in.toString / s"pages${path}" / cmpName ).contentAsString
-        ( pageRoot / s"$cmpName.data.html" ).write(content.substring(content.indexOf('>')+1, content.lastIndexOf('<')))
+        (parentData / s"${fileData.name}_${cmpName}.html").write(content.substring(content.indexOf('>')+1, content.lastIndexOf('<')))
 
       })
     })
 
+
+    // Migrate static resources
+    backup \ "resources" \ "resource" foreach( xmlResourceMetadata => {
+      val path = (xmlResourceMetadata \ "path").text
+      val (fileMeta, parentMeta) = createFileReferences( (exportRoot / "meta"), path )
+
+      // Migrate metadata
+      ResourceMetadata(
+        path = (xmlResourceMetadata \ "path").text,
+        encoding = (xmlResourceMetadata \ "encoding").text,
+        mimeType = (xmlResourceMetadata \ "mimeType").text
+      ) toJson (parentMeta / s"${fileMeta.name}.json")
+
+      // Migrate data
+      val (fileData, parentData) = createFileReferences( (exportRoot / "data"), path )
+      ( in.toString / s"resources${path}" ) copyTo( fileData, true )
+
+    })
+
     // Migrate Templates.
-    backup \ "templates" \ "template" foreach( templateMetadata => {
-      val path = (templateMetadata \ "path").text
-      val templateRoot = ( exportRoot / s"cms/templates${path}" ) createIfNotExists(true, true)
+    backup \ "templates" \ "template" foreach( xmlTemplateMetadata => {
+      val path = (xmlTemplateMetadata \ "path").text
+      val templatePath = (exportRoot / "templates" / mkRelative(path))
 
       // Migrate metadata
       TemplateMetadata(
         path = path,
-        encoding = (templateMetadata \ "encoding").text,
-        mimeType = (templateMetadata \ "mimeType").text
-      ) toJson ( templateRoot / "metadata.json" )
+        encoding = (xmlTemplateMetadata \ "encoding").text,
+        mimeType = (xmlTemplateMetadata \ "mimeType").text
+      ) toJson ( templatePath / "metadata.json" )
 
       // Migrate data
-      ( in.toString / s"templates${path}" ) copyTo( templateRoot / "data.html", true)
-
-    })
-
-    // Migrate static resources
-    backup \ "resources" \ "resource" foreach( resourceMetadata => {
-      val path = (resourceMetadata \ "path").text.toFile
-      val resourceRoot = ( exportRoot / s"cms/resources/metadata${path.parent}" ) createIfNotExists(true, true)
-
-      // Migrate metadata
-      ResourceMetadata(
-        path = (resourceMetadata \ "path").text,
-        encoding = (resourceMetadata \ "encoding").text,
-        mimeType = (resourceMetadata \ "mimeType").text
-      ) toJson ( resourceRoot / s"${path.name}.metadata.json" )
-
-      // Migrate data
-      ( in.toString / s"resources${path}" ) copyTo( resourceRoot / path.name, true)
+      ( in.toString / s"templates${path}" ) copyTo( ( templatePath / "data.html" ), true)
 
     })
 
