@@ -11,7 +11,7 @@ object Renderer {
 
   @tailrec
   private def sandwichMerge[A](seq1: Seq[A], seq2: Seq[A], acc: Seq[A] = Seq()): Seq[A] = seq1 match {
-    case List() => acc
+    case Nil => acc ++ seq2
     case head :: tail => sandwichMerge(seq2, tail, acc :+ head)
   }
 
