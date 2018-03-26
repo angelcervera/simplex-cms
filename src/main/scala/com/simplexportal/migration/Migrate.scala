@@ -51,7 +51,7 @@ object Migrate {
 
         // Migrate data
         val content = ( in.toString / s"pages${path}" / cmpName ).contentAsString
-        (parentData / s"${fileData.name}_${cmpName}.html").write(content.substring(content.indexOf('>')+1, content.lastIndexOf('<')))
+        (parentData / s"_simplexportal_page_${fileData.name}_${cmpName}.html").write(content.substring(content.indexOf('>')+1, content.lastIndexOf('<')))
 
       })
     })
