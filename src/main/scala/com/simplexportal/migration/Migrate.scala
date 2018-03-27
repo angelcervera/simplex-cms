@@ -31,10 +31,11 @@ object Migrate {
     backup \ "pages" \ "page" foreach( xmlPageMetadata => {
 
       val path = (xmlPageMetadata \ "path").text
+      val encoding = Option((xmlPageMetadata \ "encoding").text).getOrElse("UTF-8")
       val template = (xmlPageMetadata \ "template").text
 
       val (fileMeta, parentMeta) = createFileReferences( (exportRoot / "meta") , path )
-      PageMetadata(path, template) toJson (parentMeta / s"${fileMeta.name}.json")
+      PageMetadata(path, template, encoding) toJson (parentMeta / s"${fileMeta.name}.json")
 
       val (fileData, parentData) = createFileReferences( (exportRoot / "data"), path )
       (xmlPageMetadata \ "components" \ "component") foreach(xmlCmpMetadata => {

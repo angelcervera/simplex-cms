@@ -24,7 +24,7 @@ object Metadata {
 
   sealed trait Metadata
 
-  case class PageMetadata(path: String, template: String) extends Metadata
+  case class PageMetadata(path: String, template: String, encoding: String = "UTF-8") extends Metadata
 
   case class ComponentMetadata(`type`: String, name: String, orderExecution: Int, parameters: Map[String, String]) extends Metadata
 
