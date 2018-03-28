@@ -35,7 +35,7 @@ object Migrate {
       val template = (xmlPageMetadata \ "template").text
 
       val (fileMeta, parentMeta) = createFileReferences( (exportRoot / "meta") , path )
-      PageMetadata(path, template, encoding) toJson (parentMeta / s"${fileMeta.name}.json")
+      PageMetadata(path, template, encoding) toJson (parentMeta / s"${fileMeta.name}.page.json")
 
       val (fileData, parentData) = createFileReferences( (exportRoot / "data"), path )
       (xmlPageMetadata \ "components" \ "component") foreach(xmlCmpMetadata => {
@@ -47,7 +47,7 @@ object Migrate {
           name = cmpName,
           orderExecution = (xmlCmpMetadata \ "orderExecution").text.toInt,
           parameters = Map.empty // FIXME: extract properties (componentMetadata \ "parameters").map(node=>node.namespace->node.text).toMap
-        ) toJson (parentMeta / s"${fileMeta.name}_${cmpName}.json")
+        ) toJson (parentMeta / s"${fileMeta.name}_${cmpName}.component.json")
 
 
         // Migrate data
@@ -68,7 +68,7 @@ object Migrate {
         path = (xmlResourceMetadata \ "path").text,
         encoding = (xmlResourceMetadata \ "encoding").text,
         mimeType = (xmlResourceMetadata \ "mimeType").text
-      ) toJson (parentMeta / s"${fileMeta.name}.json")
+      ) toJson (parentMeta / s"${fileMeta.name}.resource.json")
 
       // Migrate data
       val (fileData, parentData) = createFileReferences( (exportRoot / "data"), path )
