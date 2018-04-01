@@ -23,7 +23,9 @@ lazy val root = (project in file(".")).
       "com.typesafe"                 %  "config"                    % "1.3.2",
       "org.scala-lang.modules"       %% "scala-xml"                 % "1.1.0",
       "com.github.pathikrit"         %% "better-files"              % "3.4.0",
-      "com.iheart"                   %% "ficus"                     % "1.4.3"
+      "com.iheart"                   %% "ficus"                     % "1.4.3",
+      "com.typesafe.scala-logging"   %% "scala-logging"             % "3.8.0",
+      "ch.qos.logback"                % "logback-classic"           % "1.2.3"
     ).map(_ % Compile) ++
     Seq( // Test scope dependencies
       "org.scalatest"                %% "scalatest"                 % scalatestVersion,
