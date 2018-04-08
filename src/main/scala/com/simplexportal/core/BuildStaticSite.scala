@@ -3,13 +3,13 @@ package com.simplexportal.core
 import com.typesafe.scalalogging.LazyLogging
 import better.files._
 
-object SimplexCore extends App with LazyLogging {
+object BuildStaticSite extends App with LazyLogging {
 
 
   logger.info(s"Storage: ${Configuration.storage}")
   logger.info(s"Output ${Configuration.output}")
 
-  val storage = Storage(Configuration.storage)
+  val storage = new Storage(Configuration.storage)
   import storage._
 
   // Generate pages.
@@ -20,7 +20,7 @@ object SimplexCore extends App with LazyLogging {
   })
 
   // Copy resources.
-  storage.resources.foreach(metadata => {
+  storage.collectResourceMetadata.foreach(metadata => {
     val resourceFile = s"${Configuration.output}${metadata.path}".toFile
     resourceFile.parent.createDirectories()
     metadata.data.copyTo(resourceFile, true)

@@ -30,7 +30,7 @@ class StorageTest extends WordSpec {
             template = Template(TemplateMetadata("/blog/post.html","UTF-8","text/html"), "")
           )
         )
-        val result = Storage("src/test/resources/com/simplexportal/migration/examples/blog/expected").pages
+        val result = new Storage("src/test/resources/com/simplexportal/migration/examples/blog/expected").pages
 
         assert(cleanData(result) == expected)
       }

@@ -2,14 +2,28 @@ package com.simplexportal.migration
 
 import java.nio.file.{Path, Paths}
 
-import better.files._
 import net.ceedubs.ficus.Ficus._
-import com.simplexportal.core.Configuration
 import com.simplexportal.core.datamodel.Metadata._
+import org.json4s.NoTypeHints
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.writePretty
+import better.files._
+import better.files.Dsl.SymbolicOperations
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.xml.XML
 
 object Migrate {
+
+  implicit val formats = Serialization.formats(NoTypeHints)
+
+  implicit class MetadataJsonUtilities(obj: Metadata) {
+    def toJson: String = writePretty(obj)
+    def toJson(file: File): File = {
+      file.parent.createDirectories()
+      file < toJson
+    }
+  }
 
   private def mkRelative(path: String) = if(path.startsWith("/")) "." + path else path
 
@@ -99,9 +113,11 @@ object Migrate {
 
 object MigrateMain extends App {
 
+  val config: Config = ConfigFactory.load()
+
   Migrate.migrate(
-    Paths.get(Configuration.config.as[String]("simplex.migration.in")),
-    Paths.get(Configuration.config.as[String]("simplex.migration.out"))
+    Paths.get(config.as[String]("simplex.migration.in")),
+    Paths.get(config.as[String]("simplex.migration.out"))
   )
 
 }

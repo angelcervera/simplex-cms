@@ -25,7 +25,9 @@ lazy val root = (project in file(".")).
       "com.github.pathikrit"         %% "better-files"              % "3.4.0",
       "com.iheart"                   %% "ficus"                     % "1.4.3",
       "com.typesafe.scala-logging"   %% "scala-logging"             % "3.8.0",
-      "ch.qos.logback"                % "logback-classic"           % "1.2.3"
+      "ch.qos.logback"                % "logback-classic"           % "1.2.3",
+      "com.typesafe.akka"            %% "akka-http"                 % "10.1.0",
+      "com.typesafe.akka"            %% "akka-stream"               % "2.5.11"
     ).map(_ % Compile) ++
     Seq( // Test scope dependencies
       "org.scalatest"                %% "scalatest"                 % scalatestVersion,

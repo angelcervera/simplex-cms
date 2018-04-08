@@ -13,7 +13,6 @@ import org.codehaus.stax2.XMLInputFactory2
 import scala.annotation.tailrec
 
 
-
 sealed trait ParserError extends Error {
   val message: String
 }

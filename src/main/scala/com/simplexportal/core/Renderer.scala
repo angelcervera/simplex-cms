@@ -1,13 +1,10 @@
 package com.simplexportal.core
 
 import com.simplexportal.core.datamodel.ComponentDefinition
-import com.simplexportal.core.datamodel.Metadata.ResourceMetadata
 
 import scala.annotation.tailrec
 
 
-// TODO: In this first iteration, check if there is a custom content for the component, and use it directly.
-// TODO: Next step, parser the custom component to find new inner components.
 object Renderer {
 
   @tailrec
