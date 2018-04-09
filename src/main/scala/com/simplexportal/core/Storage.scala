@@ -67,6 +67,11 @@ class Storage(rootPath: String) extends LazyLogging {
     (rootFile / s"data${pageFile.parent.toString()}/_simplexportal_page_${pageFile.name}_${cmp.name}.html")
   }
 
+  def readResourceData(resource: ResourceMetadata) : File = {
+    val pageFile = resource.path.toFile
+    (rootFile / s"data${pageFile.toString()}")
+  }
+
 
   def collectPageMetadata =
     (rootFile / "meta")
