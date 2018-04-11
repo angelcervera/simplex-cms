@@ -54,7 +54,7 @@ trait RequestHandler {
 
   def folderHandler(f: Folder) = f.metadata.defaultContent match {
     case Some(path) => paths.get(path) match {
-      case f: Folder => HttpResponse(StatusCodes.InternalServerError, entity = HttpEntity("Folder as default content is not allowed. Please, fix the site."))
+      case Some(f: Folder) => HttpResponse(StatusCodes.InternalServerError, entity = HttpEntity("Folder as default content is not allowed. Please, fix the site."))
       case _ => pathHandler(path)
     }
     case None if f.metadata.listContents => HttpResponse(StatusCodes.InternalServerError, entity = "List folder content is not implemented.")
