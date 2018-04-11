@@ -12,6 +12,7 @@ case class Component(metadata: ComponentMetadata, data: String) extends StorageD
 case class Template(metadata: TemplateMetadata, data: String) extends StorageDataModel
 case class Page(metadata: PageMetadata, components: Seq[Component], template: Template) extends StorageDataModel
 case class Resource(metadata: ResourceMetadata) extends StorageDataModel
+case class Folder(metadata: FolderMetadata) extends StorageDataModel
 
 class Storage(rootPath: String) extends LazyLogging {
 
@@ -34,7 +35,10 @@ class Storage(rootPath: String) extends LazyLogging {
 
   lazy val templates = readTemplates
 
-  def paths = pages.map(p=>p.metadata.path -> p).toMap ++ resources.map(r=>r.metadata.path -> r).toMap
+  def paths =
+    pages.map(p=>p.metadata.path -> p).toMap ++
+    resources.map(r=>r.metadata.path -> r).toMap ++
+    folders.map(f=>f.metadata.path -> f).toMap
 
   def pages: Seq[Page] =
       collectPageMetadata
@@ -43,6 +47,10 @@ class Storage(rootPath: String) extends LazyLogging {
   def resources: Seq[Resource] =
     collectResourceMetadata
       .map(metadata => Resource(metadata))
+
+  def folders: Seq[Folder] =
+    collectFolderMetadata
+      .map(metadata => Folder(metadata))
 
   private def readTemplates: Map[String, Template] =
       collectTemplateMetadata
@@ -95,6 +103,14 @@ class Storage(rootPath: String) extends LazyLogging {
       .filter(_.name == "metadata.json" )
       .map(_.contentAsString)
       .map(read[TemplateMetadata])
+      .toSeq
+
+  def collectFolderMetadata =
+    (rootFile / "meta")
+      .listRecursively
+      .filter(_.name == "folder.json" )
+      .map(_.contentAsString)
+      .map(read[FolderMetadata])
       .toSeq
 
 }
