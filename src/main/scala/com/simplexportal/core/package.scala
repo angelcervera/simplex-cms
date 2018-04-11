@@ -6,6 +6,8 @@ import scala.collection.JavaConverters._
 
 package object util {
 
+  def toOption(strs: String*) = strs.find(s => s !=null && !s.isEmpty)
+
   /**
     * Utilities to manage TypeSafe Config
     */

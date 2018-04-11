@@ -12,6 +12,8 @@ object Metadata {
 
   case class ResourceMetadata(path: String, encoding: String, mimeType: String) extends Metadata
 
+  case class FolderMetadata(path: String, defaultContent: Option[String], listContents: Boolean) extends Metadata
+
 }
 
 

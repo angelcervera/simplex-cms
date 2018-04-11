@@ -1,0 +1,5 @@
+{
+  "path" : "/blog",
+  "defaultContent" : "/blog/index.html",
+  "listContents" : false
+}
