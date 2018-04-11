@@ -41,8 +41,14 @@ class Storage(rootPath: String) extends LazyLogging {
     folders.map(f=>f.metadata.path -> f).toMap
 
   def pages: Seq[Page] =
-      collectPageMetadata
-      .map(metadata => Page(metadata, readComponents(metadata), templates.get(metadata.template).get))
+    collectPageMetadata.foldLeft(Seq.empty[Page]) { (s, m) =>
+      templates.get(m.template) match {
+        case None =>
+          logger.error(s"Ignoring page [${m.path}] because is using  the template [${m.template}] and it is not defined.")
+          s
+        case Some(templ) => s :+ Page(m, readComponents(m), templ)
+      }
+    }
 
   def resources: Seq[Resource] =
     collectResourceMetadata
