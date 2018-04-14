@@ -1,5 +1,6 @@
 package com.simplexportal.core
 
+import com.simplexportal.core.dao.{Component, Page}
 import com.simplexportal.core.datamodel.ComponentDefinition
 
 import scala.annotation.tailrec

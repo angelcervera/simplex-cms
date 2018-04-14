@@ -2,7 +2,7 @@ package com.simplexportal.core.datamodel
 
 import java.nio.file.Paths
 
-import com.simplexportal.core.datamodel.Metadata._
+import com.simplexportal.core.dao.DataModel._
 import org.scalatest.WordSpec
 import better.files._
 
@@ -10,7 +10,7 @@ import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 
-class MetadataTest extends WordSpec {
+class DataModelTest extends WordSpec {
 
   "JacksonUtilities" should {
     "serialize/deserialize" when {

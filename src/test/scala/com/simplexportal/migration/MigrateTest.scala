@@ -2,7 +2,7 @@ package com.simplexportal.migration
 
 import java.nio.file.Paths
 
-import com.simplexportal.core.datamodel.Metadata.FolderMetadata
+import com.simplexportal.core.dao.DataModel.FolderMetadata
 import org.scalatest.WordSpec
 
 class MigrateTest extends WordSpec {

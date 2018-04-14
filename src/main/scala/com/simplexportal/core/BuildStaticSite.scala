@@ -2,6 +2,7 @@ package com.simplexportal.core
 
 import com.typesafe.scalalogging.LazyLogging
 import better.files._
+import com.simplexportal.core.dao.Storage
 
 object BuildStaticSite extends App with LazyLogging {
 

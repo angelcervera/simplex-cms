@@ -1,6 +1,6 @@
-package com.simplexportal.core.datamodel
+package com.simplexportal.core.dao
 
-object Metadata {
+object DataModel {
 
   sealed trait Metadata
 

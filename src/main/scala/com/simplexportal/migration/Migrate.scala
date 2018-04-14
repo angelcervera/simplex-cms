@@ -13,7 +13,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import scala.util.Try
 import scala.xml.{Node, XML}
 
-import com.simplexportal.core.datamodel.Metadata._
+import com.simplexportal.core.dao.DataModel._
 import com.simplexportal.core.util._
 
 object Migrate {

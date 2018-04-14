@@ -6,6 +6,7 @@ import akka.stream.Materializer
 import akka.util.CompactByteString
 import better.files.File
 import com.simplexportal.core._
+import com.simplexportal.core.dao.{Folder, Page, Resource, Storage}
 
 trait RequestHandler {
 
