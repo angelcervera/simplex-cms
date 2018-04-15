@@ -1,6 +1,8 @@
 {
+  "path" : "/blog/2015/10/04/post1/_simplexportal_post.html_head.html",
   "type" : "head",
   "name" : "head",
   "orderExecution" : 100,
+  "transformers" : [ "velocity" ],
   "parameters" : { }
 }

@@ -130,14 +130,18 @@ Layout Examples:
 
 
 ## Notes
-Woodstox posts:
+### Woodstox posts:
 - [Configuring Woodstox XML parser: basic Stax properties / Woodstox Part 1](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-basic-stax-properties-39bdf88c18ec)
 - [Configuring Woodstox XML parser: Stax2 properties / Woodstox Part 2](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-stax2-properties-c80ef5a32ef1) 
 - [Configuring Woodstox XML parser: Woodstox-specific properties / Woodstox Part 3](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
 - [GitHub](https://github.com/FasterXML/woodstox)
 - [Official website ???](https://fasterxml.github.io/woodstox/)
 
-Jackson:
+### Jackson:
 - [Home page](https://github.com/FasterXML/jackson)
 - [Scala module](https://github.com/FasterXML/jackson-module-scala)
 - [https://github.com/FasterXML/jackson-modules-java8](Allow Java8 Date)
+
+### Markdown:
+- [Atlassian Common Mark](https://github.com/atlassian/commonmark-java)
+- [Flexmark](https://github.com/vsch/flexmark-java)

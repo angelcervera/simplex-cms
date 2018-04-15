@@ -72,19 +72,14 @@ class Storage(rootPath: String) extends LazyLogging {
       .filter(f => f.name.startsWith(pageName) && f.name.endsWith(".component.json"))
       .map(_.contentAsString)
       .map(read[ComponentMetadata])
-      .map(cmp => Component(cmp, readComponentData(pageMetadata, cmp).contentAsString))
+      .map(cmp => Component(cmp, readComponentData(cmp).contentAsString))
       .toSeq
   }
 
-  private def readComponentData(page: PageMetadata, cmp: ComponentMetadata): File = {
-    val pageFile = page.path.toFile
-    (rootFile / s"data${pageFile.parent.toString()}/_simplexportal_page_${pageFile.name}_${cmp.name}.html")
-  }
+  def readComponentData(cmp: ComponentMetadata): File = (rootFile / s"data${cmp.path}")
 
-  def readResourceData(resource: ResourceMetadata) : File = {
-    val pageFile = resource.path.toFile
-    (rootFile / s"data${pageFile.toString()}")
-  }
+  def readResourceData(resource: ResourceMetadata) : File =  (rootFile / s"data${resource.path.toFile.toString()}")
+
 
 
   def collectPageMetadata =
@@ -119,5 +114,7 @@ class Storage(rootPath: String) extends LazyLogging {
       .map(read[FolderMetadata])
       .toSeq
 
+
+  def calculatePagePath: String = ???
 }
 

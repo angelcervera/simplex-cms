@@ -17,16 +17,16 @@ class StorageTest extends WordSpec {
           Page(
             metadata = PageMetadata("/blog/index.html","/blog/list-posts.html","UTF-8"),
             components = Seq(
-              Component(ComponentMetadata("content","post-content",100,Map()),"")
+              Component(ComponentMetadata("", "content","post-content",100, Seq.empty, Map()),"")
             ),
             template = Template(TemplateMetadata("/blog/list-posts.html","UTF-8","text/html"), "")
           ),
           Page(
             metadata = PageMetadata("/blog/2015/10/04/post1/post.html","/blog/post.html","UTF-8"),
             components = Seq(
-              Component(ComponentMetadata("content","post-content",100,Map()),""),
-              Component(ComponentMetadata("head","head",100,Map()),""),
-              Component(ComponentMetadata("content","post-content-header",100,Map()),"")
+              Component(ComponentMetadata("", "content","post-content",100, Seq.empty,Map()),""),
+              Component(ComponentMetadata("", "head","head",100, Seq.empty,Map()),""),
+              Component(ComponentMetadata("", "content","post-content-header",100, Seq.empty,Map()),"")
             ),
             template = Template(TemplateMetadata("/blog/post.html","UTF-8","text/html"), "")
           )

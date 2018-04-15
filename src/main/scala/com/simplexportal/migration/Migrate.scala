@@ -54,7 +54,7 @@ object Migrate {
 
       val (fileData, parentData) = createFileReferences( (exportRoot / "data"), pageMeta.path )
       (xmlPageMetadata \ "components" \ "component") foreach(xmlCmpMetadata => {
-        val cmpMeta = buildComponentMetadata(xmlCmpMetadata)
+        val cmpMeta = buildComponentMetadata(pageMeta, xmlCmpMetadata)
 
         // Migrate metadata
         cmpMeta toJson (parentMeta / s"${fileMeta.name}_${cmpMeta.name}.component.json")
@@ -62,7 +62,7 @@ object Migrate {
 
         // Migrate data
         val content = ( in.toString / s"pages${pageMeta.path}" / cmpMeta.name ).contentAsString
-        (parentData / s"_simplexportal_page_${fileData.name}_${cmpMeta.name}.html").write(content.substring(content.indexOf('>')+1, content.lastIndexOf('<')))
+        (parentData / s"_simplexportal_${fileData.name}_${cmpMeta.name}.html").write(content.substring(content.indexOf('>')+1, content.lastIndexOf('<')))
 
       })
     })
@@ -130,13 +130,19 @@ object Migrate {
       encoding = Option((xml \ "encoding").text).getOrElse("UTF-8")
     )
 
-  def buildComponentMetadata(xml: Node) =
+  def buildComponentMetadata(page: PageMetadata, xml: Node) = {
+    val pageFile = page.path.toFile
+
     ComponentMetadata(
+      path = s"${pageFile.parent.toString()}/_simplexportal_${pageFile.name}_${(xml \ "name").text}.html",
+      transformers = Seq("velocity"),
       `type` = (xml \ "type").text,
       name = (xml \ "name").text,
       orderExecution = (xml \ "orderExecution").text.toInt,
       parameters = Map.empty // FIXME: extract properties (componentMetadata \ "parameters").map(node=>node.namespace->node.text).toMap
     )
+  }
+
 
 
 }

@@ -1,6 +1,8 @@
 {
+  "path" : "/blog/2015/10/04/post1/_simplexportal_post.html_post-content-header.html",
   "type" : "content",
   "name" : "post-content-header",
   "orderExecution" : 100,
+  "transformers" : [ "velocity" ],
   "parameters" : { }
 }
