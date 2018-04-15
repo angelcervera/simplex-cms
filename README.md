@@ -142,6 +142,20 @@ Layout Examples:
 - [Scala module](https://github.com/FasterXML/jackson-module-scala)
 - [https://github.com/FasterXML/jackson-modules-java8](Allow Java8 Date)
 
-### Markdown:
+### Markup syntax:
+[Markup Languages](https://en.wikipedia.org/wiki/Comparison_of_document_markup_languages)
+
+#### Markdown:
+- Doxia allow markdown
 - [Atlassian Common Mark](https://github.com/atlassian/commonmark-java)
 - [Flexmark](https://github.com/vsch/flexmark-java)
+- [Implementations](https://www.w3.org/community/markdown/wiki/MarkdownImplementations)
+
+### Git:
+- [JGit](https://www.eclipse.org/jgit/)
+
+# Ideas:
+- Use [Doxia](http://maven.apache.org/doxia/references/index.html) to be able to use different formats out of the box.
+- Use YAML instead JSON:
+    - [YAML](http://yaml.org/)
+    - [snakeyaml](https://bitbucket.org/asomov/snakeyaml/wiki/Home)
