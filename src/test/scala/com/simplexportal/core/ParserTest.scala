@@ -2,7 +2,6 @@ package com.simplexportal.core
 
 import better.files.File
 import com.simplexportal.core.Parser.PartialNode
-import com.simplexportal.core.datamodel.{ComponentDefinition, Location}
 import org.scalatest.Matchers._
 import org.scalatest.{GivenWhenThen, WordSpec}
 

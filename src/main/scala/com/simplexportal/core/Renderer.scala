@@ -1,10 +1,22 @@
 package com.simplexportal.core
 
 import com.simplexportal.core.dao.{Component, Page}
-import com.simplexportal.core.datamodel.ComponentDefinition
 
 import scala.annotation.tailrec
 
+case class Location(line: Long, column: Long, characterOffset: Int) {
+  override def toString: String = s"[${line},${column},${characterOffset}]"
+}
+
+// TODO: Clean up. Are start and end necessary?
+case class ComponentDefinition(
+  `type`: String,
+  start: Location,
+  end: Location,
+  parameters: Map[String, String],
+  children: List[ComponentDefinition],
+  templateFragments: List[String]
+)
 
 object Renderer {
 
@@ -14,8 +26,10 @@ object Renderer {
     case head :: tail => sandwichMerge(seq2, tail, acc :+ head)
   }
 
+  def applyTransformers(cmp: ComponentDefinition, content: String): String = content
+
   def render(cmp: ComponentDefinition): String = cmp.children match {
-    case Nil => cmp.templateFragments.head // Render using Velocity or Markdown
+    case Nil => applyTransformers(cmp, cmp.templateFragments.head)
     case children => sandwichMerge(cmp.templateFragments, children.map(render)) mkString
   }
 

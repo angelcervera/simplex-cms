@@ -7,7 +7,6 @@ import javax.xml.stream.{XMLInputFactory, XMLStreamException, XMLStreamReader}
 
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
-import com.simplexportal.core.datamodel.{ComponentDefinition, Error, Location}
 import org.codehaus.stax2.XMLInputFactory2
 
 import scala.annotation.tailrec
@@ -43,7 +42,7 @@ object Parser {
 
     // TODO: Replace result type by Either[ParserError, SimplexPortalNode] for the case that end is None.
     def fromInternalToSimplexPortalNode(partial:PartialNode): ComponentDefinition =
-      datamodel.ComponentDefinition(
+      ComponentDefinition(
         `type` = partial.`type`,
         start = partial.start,
         end = partial.end.getOrElse(throw new Exception("Expected end location but still None")),
