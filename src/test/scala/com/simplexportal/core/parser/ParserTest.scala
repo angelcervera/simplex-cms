@@ -1,7 +1,7 @@
-package com.simplexportal.core
+package com.simplexportal.core.parser
 
 import better.files.File
-import com.simplexportal.core.Parser.PartialNode
+import com.simplexportal.core.parser.Parser.PartialNode
 import org.scalatest.Matchers._
 import org.scalatest.{GivenWhenThen, WordSpec}
 

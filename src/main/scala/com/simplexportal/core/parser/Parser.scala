@@ -1,16 +1,31 @@
-package com.simplexportal.core
+package com.simplexportal.core.parser
 
 import java.io.StringReader
-import javax.xml.stream
-import javax.xml.stream.XMLStreamConstants._
-import javax.xml.stream.{XMLInputFactory, XMLStreamException, XMLStreamReader}
 
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
+import com.simplexportal.core._
+import com.simplexportal.core.dao.Component
+import javax.xml.stream
+import javax.xml.stream.XMLStreamConstants._
+import javax.xml.stream.{XMLInputFactory, XMLStreamException, XMLStreamReader}
 import org.codehaus.stax2.XMLInputFactory2
 
 import scala.annotation.tailrec
 
+case class Location(line: Long, column: Long, characterOffset: Int) {
+  override def toString: String = s"[${line},${column},${characterOffset}]"
+}
+
+// TODO: Clean up. Are start and end necessary? Is it a AST?
+case class ComponentDefinition(
+  `type`: String,
+  start: Location,
+  end: Location,
+  parameters: Map[String, String],
+  children: List[ComponentDefinition],
+  templateFragments: List[String]
+)
 
 sealed trait ParserError extends Error {
   val message: String
@@ -29,9 +44,41 @@ object UnHandledException {
 }
 
 /**
-  * Utilities to parse a HTML template and generate a tree of nodes.
+  * Utilities to parse HTML ( template or other html like a content) and generate a ComponentDefinition tree.
   */
 object Parser {
+
+  // FIXME: Refactoring!!!
+  def treeNodes(page: dao.Page): ComponentDefinition = {
+
+    def reconstructComponentSource(component: Component) =
+      s"""<simplex:${component.metadata.`type`} name="${component.metadata.name}" ${component.metadata.parameters.map(entry=>s"""${entry._1}="${entry._2}"""").mkString(" ")}>${component.data}</simplex:${component.metadata.`type`}>"""
+
+    def merge(definition: ComponentDefinition, custom: Map[String, ComponentDefinition]): ComponentDefinition = {
+      val name = definition.parameters.get("name").getOrElse("")
+      custom.get(name) match {
+        case None => definition.copy(children = definition.children.map(merge(_, custom)))
+        case Some(custom) => custom
+      }
+    }
+
+    def parse(cmp: Component): ComponentDefinition = Parser.treeNodes(reconstructComponentSource(cmp)) match {
+      case Right(definition) => definition
+      case Left(error) => throw new Exception(error.message)
+    }
+
+    val templateTree = Parser.treeNodes(page.template.data) match { // TODO: Cache
+      case Right(tree) => tree
+      case Left(error) => throw new Exception(error.message)
+    }
+
+    val componentTrees = page
+      .components
+      .map(cmp => cmp.metadata.name -> parse(cmp))
+      .toMap
+
+    merge(templateTree, componentTrees)
+  }
 
   /**
     * Build a tree of nodes from a template.
@@ -100,6 +147,7 @@ object Parser {
       case parts if parts.size == 2 => tags.contains(parts(1)) || namespaces.contains(parts(0))
       case _ => throw new Exception(s"xml format error. [${fullTagName}] does not follow the XML format of namespace:tagname")
     }
+
   }
 
 

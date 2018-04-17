@@ -1,5 +1,6 @@
 package com.simplexportal.core
 
+import com.simplexportal.core.parser.Parser
 import org.scalatest.WordSpec
 
 class RendererTest extends WordSpec {

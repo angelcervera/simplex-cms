@@ -1,24 +1,16 @@
 package com.simplexportal.core
 
-import com.simplexportal.core.dao.{Component, Page}
+import com.simplexportal.core.dao.Page
+import com.simplexportal.core.parser.{ComponentDefinition, Parser}
 
 import scala.annotation.tailrec
 
-case class Location(line: Long, column: Long, characterOffset: Int) {
-  override def toString: String = s"[${line},${column},${characterOffset}]"
-}
-
-// TODO: Clean up. Are start and end necessary?
-case class ComponentDefinition(
-  `type`: String,
-  start: Location,
-  end: Location,
-  parameters: Map[String, String],
-  children: List[ComponentDefinition],
-  templateFragments: List[String]
-)
-
+/**
+  * Generate Html from a page.
+  */
 object Renderer {
+
+  def render(page: Page): String = render(Parser.treeNodes(page))
 
   @tailrec
   private def sandwichMerge[A](seq1: Seq[A], seq2: Seq[A], acc: Seq[A] = Seq()): Seq[A] = seq1 match {
@@ -26,47 +18,14 @@ object Renderer {
     case head :: tail => sandwichMerge(seq2, tail, acc :+ head)
   }
 
-  def applyTransformers(cmp: ComponentDefinition, content: String): String = content
 
-  def render(cmp: ComponentDefinition): String = cmp.children match {
+  // TODO: Add content into the Component and also pass the Page. So we can isolate from parser (so don't share ComponentDefinition)
+  private def applyTransformers(cmp: ComponentDefinition, content: String): String = content
+
+  // TODO: update unit test to avoid expose the function
+  private[core] def render(cmp: ComponentDefinition): String = cmp.children match {
     case Nil => applyTransformers(cmp, cmp.templateFragments.head)
     case children => sandwichMerge(cmp.templateFragments, children.map(render)) mkString
   }
-
-  def reconstructComponentSource(component: Component) =
-    s"""<simplex:${component.metadata.`type`} name="${component.metadata.name}" ${component.metadata.parameters.map(entry=>s"""${entry._1}="${entry._2}"""").mkString(" ")}>${component.data}</simplex:${component.metadata.`type`}>"""
-
-
-  // FIXME: Refactoring!!!
-  def buildCustomComponentDefinition(page: Page): ComponentDefinition = {
-
-    def merge(definition: ComponentDefinition, custom: Map[String, ComponentDefinition]): ComponentDefinition = {
-      val name = definition.parameters.get("name").getOrElse("")
-      custom.get(name) match {
-        case None => definition.copy(children = definition.children.map(merge(_, custom)))
-        case Some(custom) => custom
-      }
-    }
-
-    def parse(cmp: Component): ComponentDefinition = Parser.treeNodes(reconstructComponentSource(cmp)) match {
-      case Right(definition) => definition
-      case Left(error) => throw new Exception(error.message)
-    }
-
-    val templateTree = Parser.treeNodes(page.template.data) match { // TODO: Cache
-      case Right(tree) => tree
-      case Left(error) => throw new Exception(error.message)
-    }
-
-    val componentTrees = page
-      .components
-      .map(cmp => cmp.metadata.name -> parse(cmp))
-      .toMap
-
-    merge(templateTree, componentTrees)
-
-  }
-
-  def render(page: Page): String = render(buildCustomComponentDefinition(page))
 
 }
