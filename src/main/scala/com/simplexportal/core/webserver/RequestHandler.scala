@@ -9,6 +9,7 @@ import com.simplexportal.core._
 import com.simplexportal.core.dao.DataModel._
 import com.simplexportal.core.dao.FileSystemStorage
 import com.simplexportal.core.parser.Parser
+import com.simplexportal.core.renderer.Renderer
 import com.typesafe.scalalogging.LazyLogging
 
 trait RequestHandler extends LazyLogging {

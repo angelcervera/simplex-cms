@@ -4,6 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import better.files._
 import com.simplexportal.core.dao.FileSystemStorage
 import com.simplexportal.core.parser.Parser
+import com.simplexportal.core.renderer.Renderer
 import net.ceedubs.ficus.Ficus._
 import com.typesafe.config.{Config, ConfigFactory}
 

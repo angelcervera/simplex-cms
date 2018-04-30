@@ -1,4 +1,4 @@
-package com.simplexportal.core
+package com.simplexportal.core.renderer
 
 import com.simplexportal.core.dao.DataModel.{PageMetadata, TemplateMetadata}
 import com.simplexportal.core.dao.Storage

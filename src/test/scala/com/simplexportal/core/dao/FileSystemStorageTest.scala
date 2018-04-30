@@ -1,7 +1,6 @@
-package com.simplexportal.core
+package com.simplexportal.core.dao
 
-import com.simplexportal.core.dao.DataModel.{ComponentMetadata, PageMetadata, ResourceMetadata, TemplateMetadata}
-import com.simplexportal.core.dao.FileSystemStorage
+import com.simplexportal.core.dao.DataModel.{PageMetadata, ResourceMetadata, TemplateMetadata}
 import org.scalatest.WordSpec
 
 class FileSystemStorageTest extends WordSpec {

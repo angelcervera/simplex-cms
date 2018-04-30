@@ -1,14 +1,10 @@
-package com.simplexportal.core.datamodel
+package com.simplexportal.core.dao
 
 import java.nio.file.Paths
 
+import better.files._
 import com.simplexportal.core.dao.DataModel._
 import org.scalatest.WordSpec
-import better.files._
-
-import org.json4s._
-import org.json4s.JsonDSL._
-import org.json4s.jackson.JsonMethods._
 
 class DataModelTest extends WordSpec {
 
