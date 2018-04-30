@@ -1,5 +1,6 @@
 {
   "path" : "/blog/2015/10/04/post1/post.html",
   "template" : "/blog/post.html",
-  "encoding" : "UTF-8"
+  "encoding" : "UTF-8",
+  "mimeType" : "text/html"
 }

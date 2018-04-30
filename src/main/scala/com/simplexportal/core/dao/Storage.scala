@@ -1,120 +1,25 @@
 package com.simplexportal.core.dao
 
-import better.files._
+import better.files.File
 import com.simplexportal.core.dao.DataModel._
-import com.typesafe.scalalogging.LazyLogging
-import org.json4s.DefaultFormats
-import org.json4s.native.Serialization.read
 
-// TODO: Remove data from the case class, so only Page is necessary. Read data under demand.
-sealed trait StorageDataModel
-case class Component(metadata: ComponentMetadata, data: String) extends StorageDataModel
-case class Template(metadata: TemplateMetadata, data: String) extends StorageDataModel
-case class Page(metadata: PageMetadata, components: Seq[Component], template: Template) extends StorageDataModel
-case class Resource(metadata: ResourceMetadata) extends StorageDataModel
-case class Folder(metadata: FolderMetadata) extends StorageDataModel
+trait Storage {
 
-class Storage(rootPath: String) extends LazyLogging {
+  def readTemplateData(template: TemplateMetadata): String
 
-  implicit val formats = DefaultFormats
+  def readComponentData(component: ComponentMetadata): String
 
-  implicit class ResourceMetadataEnrich(metadata: ResourceMetadata) {
-    def data = ( rootFile / s"data/${metadata.path}" )
-  }
+  // TODO: Avoid to use File as interface definition
+  def readResourceData(resource: ResourceMetadata) : File
 
-  implicit class TemplateMetadataEnrich(metadata: TemplateMetadata) {
-    def data = (rootFile / s"templates${metadata.path}/data.html")
-  }
+  def collectPageMetadata: Seq[PageMetadata]
 
+  def collectResourceMetadata: Seq[ResourceMetadata]
 
-  lazy val rootFile = {
-    val tmpFile = rootPath.toFile
-    require(tmpFile.exists && tmpFile.isDirectory, s"${tmpFile} does not exist or it is not a directory")
-    tmpFile
-  }
+  def collectTemplateMetadata: Seq[TemplateMetadata]
 
-  lazy val templates = readTemplates
+  def collectFolderMetadata: Seq[FolderMetadata]
 
-  def paths =
-    pages.map(p=>p.metadata.path -> p).toMap ++
-    resources.map(r=>r.metadata.path -> r).toMap ++
-    folders.map(f=>f.metadata.path -> f).toMap
+  def collectComponentMetadata(pageMetadata: PageMetadata): Seq[ComponentMetadata]
 
-  def pages: Seq[Page] =
-    collectPageMetadata.foldLeft(Seq.empty[Page]) { (s, m) =>
-      templates.get(m.template) match {
-        case None =>
-          logger.error(s"Ignoring page [${m.path}] because is using  the template [${m.template}] and it is not defined.")
-          s
-        case Some(templ) => s :+ Page(m, readComponents(m), templ)
-      }
-    }
-
-  def resources: Seq[Resource] =
-    collectResourceMetadata
-      .map(metadata => Resource(metadata))
-
-  def folders: Seq[Folder] =
-    collectFolderMetadata
-      .map(metadata => Folder(metadata))
-
-  private def readTemplates: Map[String, Template] =
-      collectTemplateMetadata
-      .map(template => template.path -> Template(template, template.data.contentAsString))
-      .toMap
-
-  private def readComponents(pageMetadata: PageMetadata): Seq[Component] = {
-    val absolutePath = (rootFile / s"meta${pageMetadata.path}")
-    val pageName = absolutePath.name
-    absolutePath
-      .parent
-      .list
-      .filter(f => f.name.startsWith(pageName) && f.name.endsWith(".component.json"))
-      .map(_.contentAsString)
-      .map(read[ComponentMetadata])
-      .map(cmp => Component(cmp, readComponentData(cmp).contentAsString))
-      .toSeq
-  }
-
-  def readComponentData(cmp: ComponentMetadata): File = (rootFile / s"data${cmp.path}")
-
-  def readResourceData(resource: ResourceMetadata) : File =  (rootFile / s"data${resource.path.toFile.toString()}")
-
-
-
-  def collectPageMetadata =
-    (rootFile / "meta")
-      .listRecursively
-      .filter(_.name.endsWith(".page.json") )
-      .map(_.contentAsString)
-      .map(read[PageMetadata])
-      .toSeq
-
-  def collectResourceMetadata =
-    (rootFile / "meta")
-      .listRecursively
-      .filter(_.name.endsWith(".resource.json") )
-      .map(_.contentAsString)
-      .map(read[ResourceMetadata])
-      .toSeq
-
-  def collectTemplateMetadata =
-    (rootFile / "templates")
-      .listRecursively
-      .filter(_.name == "metadata.json" )
-      .map(_.contentAsString)
-      .map(read[TemplateMetadata])
-      .toSeq
-
-  def collectFolderMetadata =
-    (rootFile / "meta")
-      .listRecursively
-      .filter(_.name == "folder.json" )
-      .map(_.contentAsString)
-      .map(read[FolderMetadata])
-      .toSeq
-
-
-  def calculatePagePath: String = ???
 }
-

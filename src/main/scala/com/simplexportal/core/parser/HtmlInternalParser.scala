@@ -178,7 +178,7 @@ private[parser] object HtmlInternalParser {
       `type` = partial.`type`,
       name = partial.parameters.getOrElse(
         ATTR_NAME,
-        throw new Exception(s"Name not found in the component definition on [${partial.start}] with parameters [${partial.parameters.mkString(",")}].")
+        throw new Exception(s"Name not found in the component [${partial.`type`}] definition on [${partial.start}] with parameters [${partial.parameters.mkString(",")}].")
       ),
       orderExecution = partial.parameters.getOrElse(ATTR_ORDER_EXECUTION, ATTR_ORDER_EXECUTION_DEFAULT).toInt,
       transformers = partial.parameters.getOrElse(ATTR_TRANSFORMERS, ATTR_TRANSFORMERS_DEFAULT).split(","),

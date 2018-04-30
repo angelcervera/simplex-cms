@@ -32,7 +32,8 @@ lazy val root = (project in file(".")).
     ).map(_ % Compile) ++
     Seq( // Test scope dependencies
       "org.scalatest"                %% "scalatest"                 % scalatestVersion,
-      "org.scalactic"                %% "scalactic"                 % scalatestVersion
+      "org.scalactic"                %% "scalactic"                 % scalatestVersion,
+      "org.scalamock"                %% "scalamock"                 % "4.1.0"
     ).map(_ % Test)
   )
 

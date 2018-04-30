@@ -1,6 +1,13 @@
 # simplex-cms
 Refactoring of the CMS
 
+## Parser TODO:
+
+Remind that treeNode always return a ComponentDefinition with name root that is wrapping the real list of components.
+So next step is to check if it is better continue using ComponentDefinition internally.
+ 
+
+
 ## Migration steps
 For the first milestone, basic documentation and basic CMS stuff.
 
