@@ -1,6 +1,6 @@
 package com.simplexportal.core.renderer
 
-import com.simplexportal.core.dao.DataModel.{PageMetadata, TemplateMetadata}
+import com.simplexportal.core.dao.{PageMetadata, TemplateMetadata}
 import com.simplexportal.core.dao.Storage
 import com.simplexportal.core.parser.Parser
 import org.scalamock.scalatest.MockFactory
@@ -35,6 +35,13 @@ class RendererTest extends WordSpec with MockFactory {
       }
       "there is nothing between all components" in {
         testTemplateRender("""<html>is<simplex:c name="nc"><simplex:d name="nd"> this </simplex:d><simplex:e name="ne">renderer</simplex:e></simplex:c> working properly or it isn't</html>""")
+      }
+
+      "there are markdown code" in {
+        testTemplateRender(
+          """<html>is<simplex:c name="nc"><simplex:d name="nd"> this </simplex:d><simplex:e name="ne" transformers="markdown">*renderer*</simplex:e></simplex:c> working properly or it isn't</html>""",
+          "<html>is this <p><em>renderer</em></p>\n working properly or it isn't</html>"
+        )
       }
     }
 

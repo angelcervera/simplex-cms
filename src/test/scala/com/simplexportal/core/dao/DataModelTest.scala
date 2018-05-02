@@ -3,7 +3,7 @@ package com.simplexportal.core.dao
 import java.nio.file.Paths
 
 import better.files._
-import com.simplexportal.core.dao.DataModel._
+import com.simplexportal.core.dao._
 import org.scalatest.WordSpec
 
 class DataModelTest extends WordSpec {

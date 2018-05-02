@@ -1,6 +1,6 @@
 package com.simplexportal.core.parser
 
-import com.simplexportal.core.dao.DataModel.{ComponentMetadata, PageMetadata, TemplateMetadata}
+import com.simplexportal.core.dao.{ComponentMetadata, PageMetadata, TemplateMetadata}
 import com.simplexportal.core.dao.Storage
 
 

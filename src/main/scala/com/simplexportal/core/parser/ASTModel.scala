@@ -1,6 +1,6 @@
 package com.simplexportal.core.parser
 
-import com.simplexportal.core.dao.DataModel._
+import com.simplexportal.core.dao._
 
 sealed trait ASTModel {
   val metadata: Metadata
