@@ -1,7 +1,7 @@
 package com.simplexportal.core.dao
 
 import better.files.File
-import com.simplexportal.core.dao.DataModel._
+import com.simplexportal.core.dao._
 
 trait Storage {
 

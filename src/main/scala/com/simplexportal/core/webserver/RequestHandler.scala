@@ -6,7 +6,7 @@ import akka.stream.Materializer
 import akka.util.CompactByteString
 import better.files.File
 import com.simplexportal.core._
-import com.simplexportal.core.dao.DataModel._
+import com.simplexportal.core.dao._
 import com.simplexportal.core.dao.FileSystemStorage
 import com.simplexportal.core.parser.Parser
 import com.simplexportal.core.renderer.Renderer
@@ -34,6 +34,15 @@ trait RequestHandler extends LazyLogging {
     case meta: PageMetadata => meta.path -> CompactByteString(Renderer.render(parser.treeNodes(meta)))
   }(collection.breakOut)
 
+//  val staticPages: Map[String, CompactByteString] = paths.values.flatMap( meta => meta match {
+//    case meta: PageMetadata => Renderer.render(parser.treeNodes(meta)) match {
+//      case Right(html) => Some (meta.path -> CompactByteString(html))
+//      case Left(error) =>
+//        logger.error(error.message)
+//        None
+//    }
+//    case _: Metadata => None
+//  }).toMap
 
   private def calculateContentType(s: String, default: ContentType = ContentTypes.NoContentType) = ContentType.parse(s).getOrElse(default)
 

@@ -1,7 +1,7 @@
 package com.simplexportal.core.dao
 
 import better.files._
-import com.simplexportal.core.dao.DataModel._
+import com.simplexportal.core.dao._
 import com.typesafe.scalalogging.LazyLogging
 import org.json4s.DefaultFormats
 import org.json4s.native.Serialization.read

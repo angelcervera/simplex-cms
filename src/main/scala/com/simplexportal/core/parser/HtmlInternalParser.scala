@@ -5,7 +5,7 @@ import java.io.StringReader
 import com.ctc.wstx.api.WstxInputProperties
 import com.ctc.wstx.stax.WstxInputFactory
 import com.simplexportal.core.Configuration
-import com.simplexportal.core.dao.DataModel._
+import com.simplexportal.core.dao._
 import javax.xml.stream
 import javax.xml.stream.XMLStreamConstants.{END_DOCUMENT, END_ELEMENT, START_ELEMENT}
 import javax.xml.stream.{XMLInputFactory, XMLStreamReader}
