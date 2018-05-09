@@ -199,6 +199,7 @@ private[parser] object HtmlInternalParser {
       PageNode(
         metadata = PageMetadata(
           path = "",
+          cache = HttpCache("1"),
           template = ""
         ),
         children = root.children.map(buildComponentNode(template, _)),

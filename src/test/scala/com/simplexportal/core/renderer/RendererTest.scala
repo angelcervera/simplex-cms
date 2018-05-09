@@ -1,7 +1,6 @@
 package com.simplexportal.core.renderer
 
-import com.simplexportal.core.dao.{PageMetadata, TemplateMetadata}
-import com.simplexportal.core.dao.Storage
+import com.simplexportal.core.dao.{HttpCache, PageMetadata, Storage, TemplateMetadata}
 import com.simplexportal.core.parser.Parser
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.WordSpec
@@ -9,7 +8,7 @@ import org.scalatest.WordSpec
 class RendererTest extends WordSpec with MockFactory {
 
   def testTemplateRender(template: String, expected: String = "<html>is this renderer working properly or it isn't</html>") = {
-    val pageMetadata = PageMetadata("/", "/template")
+    val pageMetadata = PageMetadata("/", HttpCache("1"), "/template")
     val templateMetadata = TemplateMetadata("/template", "UTF8", "text/html")
     val fakeStorage = stub[Storage]
     (fakeStorage.collectTemplateMetadata _).when().returns( Seq(templateMetadata))

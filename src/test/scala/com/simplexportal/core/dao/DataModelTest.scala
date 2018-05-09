@@ -25,7 +25,7 @@ class DataModelTest extends WordSpec {
 //      }
 
       "try PageMetadata" in {
-        val page = PageMetadata(path="/xx/xx", template = "/templateXX/XX")
+        val page = PageMetadata(path="/xx/xx", template = "/templateXX/XX", cache = HttpCache("1"))
 
         val path = Paths.get("target/out/jackson/PageMetadata.json")
         path.toFile.toScala.parent.createDirectories

@@ -16,6 +16,7 @@ import scala.xml.{Node, XML}
 import com.simplexportal.core.dao._
 import com.simplexportal.core.util._
 
+// TODO: Use FileSystemStorage
 object Migrate {
 
   implicit val formats = Serialization.formats(NoTypeHints)
@@ -112,6 +113,7 @@ object Migrate {
   def buildResourceMetadata(xml: Node) =
     ResourceMetadata(
       path = (xml \ "path").text,
+      cache = HttpCache("1"),
       encoding = (xml \ "encoding").text,
       mimeType = (xml \ "mimeType").text
     )
@@ -126,6 +128,7 @@ object Migrate {
   def buildPageMetadata(xml: Node) =
     PageMetadata(
       path = (xml \ "path").text,
+      cache = HttpCache("1"),
       template = (xml \ "template").text,
       encoding = Option((xml \ "encoding").text).getOrElse("UTF-8")
     )
