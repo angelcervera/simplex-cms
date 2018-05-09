@@ -5,6 +5,7 @@ import com.simplexportal.core.dao._
 
 trait Storage {
 
+
   def readTemplateData(template: TemplateMetadata): String
 
   def readComponentData(component: ComponentMetadata): String
@@ -12,7 +13,11 @@ trait Storage {
   // TODO: Avoid to use File as interface definition
   def readResourceData(resource: ResourceMetadata) : File
 
+  def writePageMetadata(page: PageMetadata)
+
   def collectPageMetadata: Seq[PageMetadata]
+
+  def writeResourceMetadata(resource: ResourceMetadata)
 
   def collectResourceMetadata: Seq[ResourceMetadata]
 

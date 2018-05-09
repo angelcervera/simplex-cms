@@ -1,6 +1,6 @@
 package com.simplexportal.core.renderer
 
-import com.simplexportal.core.BuildStaticSite.logger
+import com.simplexportal.tools.BuildStaticSite.logger
 import com.simplexportal.core.dao.{ComponentMetadata, Metadata}
 import com.simplexportal.core.datamodel.SimplexPortalError
 import com.simplexportal.core.parser._

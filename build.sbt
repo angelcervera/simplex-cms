@@ -20,6 +20,7 @@ lazy val root = (project in file(".")).
       "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.9.4",
       "org.json4s"                   %% "json4s-native"             % "3.5.3",
       "org.json4s"                   %% "json4s-jackson"            % "3.5.3",
+      "org.json4s"                   %% "json4s-ext"                % "3.5.3",
       "com.typesafe"                 %  "config"                    % "1.3.2",
       "org.scala-lang.modules"       %% "scala-xml"                 % "1.1.0",
       "com.github.pathikrit"         %% "better-files"              % "3.4.0",

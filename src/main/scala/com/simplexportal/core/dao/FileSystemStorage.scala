@@ -1,23 +1,35 @@
 package com.simplexportal.core.dao
 
 import better.files._
-import com.simplexportal.core.dao._
+import better.files.Dsl.SymbolicOperations
 import com.typesafe.scalalogging.LazyLogging
-import org.json4s.DefaultFormats
+import org.json4s._
+import org.json4s.ext.EnumNameSerializer
+import org.json4s.jackson.Serialization.writePretty
 import org.json4s.native.Serialization.read
 
 class FileSystemStorage(rootPath: String) extends Storage with LazyLogging {
 
+  implicit def json4sFormats: Formats = DefaultFormats + new EnumNameSerializer(HttpCacheability)
+
+  implicit class MetadataJsonUtilities(obj: Metadata) {
+    def toJson: String = writePretty(obj)
+    def toJson(file: File): File = {
+      file.parent.createDirectories()
+      file < toJson
+    }
+  }
+
+  private def mkRelative(path: String) = if(path.startsWith("/")) "." + path else path
+
+  private def createFileReferences(out: File, path: String): (File, File) = {
+    val file: File = ( out / mkRelative(path) )
+    val parent = file.parent.createDirectories()
+
+    (file, parent)
+  }
+
   implicit val formats = DefaultFormats
-
-//  implicit class ResourceMetadataEnrich(metadata: ResourceMetadata) {
-//    def data = ( rootFile / s"data/${metadata.path}" )
-//  }
-//
-//  implicit class TemplateMetadataEnrich(metadata: TemplateMetadata) {
-//    def data = (rootFile / s"templates${metadata.path}/data.html")
-//  }
-
 
   lazy val rootFile = {
     val tmpFile = rootPath.toFile
@@ -25,56 +37,11 @@ class FileSystemStorage(rootPath: String) extends Storage with LazyLogging {
     tmpFile
   }
 
-//  lazy val templates = readTemplates
-
-//  def paths =
-//    pages.map(p=>p.metadata.path -> p).toMap ++
-//    resources.map(r=>r.metadata.path -> r).toMap ++
-//    folders.map(f=>f.metadata.path -> f).toMap
-
-//  def pages: Seq[Page] =
-//    collectPageMetadata.foldLeft(Seq.empty[Page]) { (s, m) =>
-//      templates.get(m.template) match {
-//        case None =>
-//          logger.error(s"Ignoring page [${m.path}] because is using  the template [${m.template}] and it is not defined.")
-//          s
-//        case Some(templ) => s :+ Page(m, readComponents(m), templ)
-//      }
-//    }
-
-//  def resources: Seq[Resource] =
-//    collectResourceMetadata
-//      .map(metadata => Resource(metadata))
-//
-//  def folders: Seq[Folder] =
-//    collectFolderMetadata
-//      .map(metadata => Folder(metadata))
-
-//  def readTemplates: Map[String, Template] =
-//      collectTemplateMetadata
-//      .map(template => template.path -> Template(template, template.data.contentAsString))
-//      .toMap
-
-//  def readComponents(pageMetadata: PageMetadata): Seq[Component] = {
-//    val absolutePath = (rootFile / s"meta${pageMetadata.path}")
-//    val pageName = absolutePath.name
-//    absolutePath
-//      .parent
-//      .list
-//      .filter(f => f.name.startsWith(pageName) && f.name.endsWith(".component.json"))
-//      .map(_.contentAsString)
-//      .map(read[ComponentMetadata])
-//      .map(cmp => Component(cmp, readComponentData(cmp).contentAsString))
-//      .toSeq
-//  }
-
-
   override def readTemplateData(metadata: TemplateMetadata) = (rootFile / s"templates${metadata.path}/data.html").contentAsString
 
   override def readComponentData(cmp: ComponentMetadata) = (rootFile / s"data${cmp.path}").contentAsString
 
   override def readResourceData(resource: ResourceMetadata) =  (rootFile / s"data${resource.path}")
-
 
   override def collectComponentMetadata(pageMetadata: PageMetadata) = {
     val absolutePath = (rootFile / s"meta${pageMetadata.path}")
@@ -88,6 +55,11 @@ class FileSystemStorage(rootPath: String) extends Storage with LazyLogging {
       .toSeq
   }
 
+  override def writePageMetadata(page: PageMetadata): Unit = {
+    val (fileMeta, parentMeta) = createFileReferences( (rootFile / "meta") , page.path )
+    page toJson (parentMeta / s"${fileMeta.name}.page.json")
+  }
+
   override def collectPageMetadata =
     (rootFile / "meta")
       .listRecursively
@@ -95,6 +67,11 @@ class FileSystemStorage(rootPath: String) extends Storage with LazyLogging {
       .map(_.contentAsString)
       .map(read[PageMetadata])
       .toSeq
+
+  override def writeResourceMetadata(resource: ResourceMetadata): Unit = {
+    val (fileMeta, parentMeta) = createFileReferences( (rootFile / "meta") , resource.path )
+    resource toJson (parentMeta / s"${fileMeta.name}.resource.json")
+  }
 
   override def collectResourceMetadata =
     (rootFile / "meta")
