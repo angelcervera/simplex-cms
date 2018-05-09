@@ -1,4 +1,4 @@
-package com.simplexportal.migration
+package com.simplexportal.tools
 
 import java.nio.file.{Path, Paths}
 

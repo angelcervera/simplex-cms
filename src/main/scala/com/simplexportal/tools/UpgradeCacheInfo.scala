@@ -1,4 +1,4 @@
-package com.simplexportal.migration
+package com.simplexportal.tools
 
 import com.simplexportal.core.dao.{FileSystemStorage, HttpCache}
 
