@@ -126,6 +126,30 @@ Layout Examples:
 
 ```
 
+## Assembly Deploy
+
+```
+git clone https://github.com/angelcervera/simplex-cms
+sbt clean assembly
+docker build -t simplexportal/simplex-cms .
+docker run --cpus 1 -m 1G -p <host_port>:8080 --read-only -v <host_storage_path>:/root/storage --name acervera -it simplexportal/simplex-cms
+```
+
+To export and import the docker images:
+- https://docs.docker.com/engine/reference/commandline/save/
+- https://docs.docker.com/engine/reference/commandline/load/
+
+```$bash
+docker save -o simplexportal-0.1-snapshot.tar simplexportal/simplex-cms
+gzip -9 simplexportal-0.1-snapshot.tar
+
+scp -r -P 62269 simplexportal-0.1-snapshot.tar.gz root@144.76.82.212:/root/.
+
+docker load --input simplexportal-0.1-snapshot.tar.gz
+
+```
+
+
 ## Known limitations.
 
 

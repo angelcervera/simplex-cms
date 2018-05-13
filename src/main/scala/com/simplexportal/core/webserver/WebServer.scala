@@ -14,7 +14,7 @@ object WebServer extends App with RequestHandler {
   // needed for the future map/flatmap in the end
   implicit val executionContext = system.dispatcher
 
-  val bindingFuture = Http().bindAndHandleSync(requestHandler, "localhost", 8080)
+  val bindingFuture = Http().bindAndHandleSync(requestHandler, interface = "0.0.0.0", port = 8080)
   println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
   StdIn.readLine() // let it run until user presses return
   bindingFuture

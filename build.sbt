@@ -7,10 +7,10 @@ lazy val velocityVersion   = "2.0"
 // Modules
 lazy val root = (project in file(".")).
   settings(
-    inThisBuild(List(
-      organization    := "com.simplexportal.cms",
-      scalaVersion    := "2.12.4"
-    )),
+    organization    := "com.simplexportal.cms",
+    scalaVersion    := "2.12.4",
+    mainClass in assembly := Some("com.simplexportal.core.webserver.WebServer"),
+    assemblyJarName in assembly := s"simplexportal-${version.value}.jar",
     name := "Simplex CMS",
     libraryDependencies ++=
       Seq( // compile scope dependencies
