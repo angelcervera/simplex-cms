@@ -50,15 +50,15 @@ object Migrate {
 
       val pageMeta = buildPageMetadata(xmlPageMetadata)
 
-      val (fileMeta, parentMeta) = createFileReferences( (exportRoot / "meta") , pageMeta.path )
-      pageMeta toJson (parentMeta / s"${fileMeta.name}.page.json")
+      val (fileMeta, folderParentMeta) = createFileReferences( (exportRoot / "meta") , pageMeta.path )
+      pageMeta toJson (folderParentMeta / s"${fileMeta.name}.page.json")
 
       val (fileData, parentData) = createFileReferences( (exportRoot / "data"), pageMeta.path )
       (xmlPageMetadata \ "components" \ "component") foreach(xmlCmpMetadata => {
         val cmpMeta = buildComponentMetadata(pageMeta, xmlCmpMetadata)
 
         // Migrate metadata
-        cmpMeta toJson (parentMeta / s"${fileMeta.name}_${cmpMeta.name}.component.json")
+        cmpMeta toJson (folderParentMeta / s"${fileMeta.name}_${cmpMeta.name}.component.json")
 
 
         // Migrate data
@@ -74,8 +74,8 @@ object Migrate {
 
       // Migrate metadata
       val meta = buildResourceMetadata(xmlResourceMetadata)
-      val (fileMeta, parentMeta) = createFileReferences( (exportRoot / "meta"), meta.path )
-      meta toJson (parentMeta / s"${fileMeta.name}.resource.json")
+      val (fileMeta, folderParentMeta) = createFileReferences( (exportRoot / "meta"), meta.path )
+      meta toJson (folderParentMeta / s"${fileMeta.name}.resource.json")
 
       // Migrate data
       val (fileData, parentData) = createFileReferences( (exportRoot / "data"), meta.path )
