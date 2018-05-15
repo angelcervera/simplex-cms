@@ -132,7 +132,7 @@ Layout Examples:
 git clone https://github.com/angelcervera/simplex-cms
 sbt clean assembly
 docker build -t simplexportal/simplex-cms .
-docker run --cpus 1 -m 1G -p <host_port>:8080 --read-only -v <host_storage_path>:/root/storage --name acervera -it simplexportal/simplex-cms
+docker run -d --cpus 1 -m 1G -p <host_port>:8080 --read-only -v <host_storage_path>:/root/storage --name acervera -it simplexportal/simplex-cms
 ```
 
 To export and import the docker images:
