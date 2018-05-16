@@ -126,13 +126,12 @@ Layout Examples:
 
 ```
 
-## Assembly Deploy
+## Deploy
 
 ```
 git clone https://github.com/angelcervera/simplex-cms
 sbt clean assembly
 docker build -t simplexportal/simplex-cms .
-docker run -d --cpus 1 -m 1G -p <host_port>:8080 --read-only -v <host_storage_path>:/root/storage --name acervera -it simplexportal/simplex-cms
 ```
 
 To export and import the docker images:
@@ -148,6 +147,66 @@ scp -r -P 62269 simplexportal-0.1-snapshot.tar.gz root@144.76.82.212:/root/.
 docker load --input simplexportal-0.1-snapshot.tar.gz
 
 ```
+
+Per every site, start the container on different port:
+```$bash
+docker run -d --cpus 1 -m 1G -p <[host_ip:]host_port>:8080 --read-only -v <host_storage_path>:/root/storage --name acervera -it simplexportal/simplex-cms
+```
+
+Start a Nginx container as reverse proxy:
+```$bash
+$ docker run -d --name nginx -v <local nginx.conf>:/etc/nginx/nginx.conf:ro -p 80:80 nginx
+```
+
+And the `nginx.conf` could be something like:
+```$bash
+worker_processes 1;
+
+events { worker_connections 1024; }
+
+http {
+
+    sendfile on;
+
+    upstream upstream-domain1 {
+        server 192.168.0.38:8081;
+    }
+
+    upstream upstream-domain2 {
+        server 192.168.0.38:8082;
+    }
+
+    server {
+        listen 80;
+        server_name  domain1.org *.domain1.org;
+
+        location / {
+            proxy_pass         http://upstream-domain1;
+            proxy_redirect     off;
+            proxy_set_header   Host $host;
+            proxy_set_header   X-Real-IP $remote_addr;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Host $server_name;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name  domain2.org *.domain2.org;
+
+        location / {
+            proxy_pass         http://upstream-domain2;
+            proxy_redirect     off;
+            proxy_set_header   Host $host;
+            proxy_set_header   X-Real-IP $remote_addr;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Host $server_name;
+        }
+    }
+
+}
+```
+
 
 
 ## Known limitations.
